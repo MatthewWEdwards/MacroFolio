@@ -24,5 +24,12 @@
   "page_action": {
     "default_popup": "popup.html"
   },
-  "permissions": ["declarativeContent", "webRequest"]
+  "permissions": ["declarativeContent", 
+                  "webRequest", 
+                  "<all_urls>",
+                  "webRequestBlocking",
+                  "tabs",
+                  "<all_urls>",
+                  "activeTab",
+                  "<all_urls>"]
 }
