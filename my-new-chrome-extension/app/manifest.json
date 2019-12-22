@@ -15,5 +15,8 @@
       "scripts/background.js"
     ]
   },
-  "permissions": []
+  "page_action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["declarativeContent", "webRequest"]
 }
