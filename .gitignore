@@ -8,4 +8,5 @@ test/bower_components
 package
 app/scripts
 .package-lock.json
-
+yarn.lock
+build/
