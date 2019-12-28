@@ -10,3 +10,4 @@ app/scripts
 .package-lock.json
 yarn.lock
 build/
+example_chrome_app
