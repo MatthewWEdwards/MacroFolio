@@ -1,5 +1,6 @@
 import { hostToIP, tabToHost } from './ip.js'
 
-window.setInterval(()=>{
-    console.log(hostToIP)
-}, 1000)
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+        console.log(request.doc)
+})
