@@ -1,9 +1,9 @@
 // SRC: https://stackoverflow.com/questions/11484910/resolve-host-to-ip-address-and-display-it-in-a-popup-using-a-chrome-extension/11487578#11487578
 
-var tabToHost = {};
-var hostToIP = {};
+export var tabToHost = {};
+export var hostToIP = {};
 
-function processUrl(tabId, url) {
+export function processUrl(tabId, url) {
     // Get the host part of the URL. 
     var host = url; 
     var req = 'https://dns.google.com/resolve?name=' + url
@@ -30,7 +30,8 @@ function processUrl(tabId, url) {
     }
     return
 }
-function setPopupInfo(tabId) { // Notify all popups
+
+export function setPopupInfo(tabId) { // Notify all popups
     chrome.extension.getViews({type:'popup'}).forEach(function(global) {
         global.notify(tabId);
     });
