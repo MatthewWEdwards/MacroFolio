@@ -7,11 +7,6 @@
     "start": "node utils/webserver.js"
   },
   "dependencies": {
-    "jquery": "^3.4.1",
-    "react": "16.12.0",
-    "react-dom": "16.12.0",
-    "require": "^2.4.20",
-    "traceroute": "^1.0.0",
     "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
