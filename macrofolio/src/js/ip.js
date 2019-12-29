@@ -2,6 +2,8 @@
 
 export var tabToHost = {};
 export var hostToIP = {};
+export var tabToLinks = {};
+export var num = 0
 
 export function processUrl(tabId, url) {
     // Get the host part of the URL. 
@@ -35,6 +37,13 @@ export function setPopupInfo(tabId) { // Notify all popups
     chrome.extension.getViews({type:'popup'}).forEach(function(global) {
         global.notify(tabId);
     });
+}
+
+export function updateLinks(tabId, links){
+    tabToLinks[tabId] = links
+    links.forEach((item, index, tabId)=>{processUrl(tabId, item)})
+    num = tabToLinks[tabId].length
+    chrome.browserAction.setBadgeText({text: num.toString(), tabId: tabId})
 }
 
 // Remove entry from tabToIp when the tab is closed.

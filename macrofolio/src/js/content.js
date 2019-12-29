@@ -3,3 +3,4 @@ window.onload = function() {
     let doc = document.documentElement.outerHTML
     chrome.runtime.sendMessage({"doc": doc})
 }
+
