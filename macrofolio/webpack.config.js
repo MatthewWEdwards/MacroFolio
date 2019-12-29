@@ -25,6 +25,7 @@ var options = {
     options: path.join(__dirname, "src", "js", "options.js"),
     background: path.join(__dirname, "src", "js", "background.js"),
     content: path.join(__dirname, "src", "js", "content.js"),
+    include: path.join(__dirname, "src", "js", "include.js"),
     ip: path.join(__dirname, "src", "js", "ip.js")
   },
   output: {
