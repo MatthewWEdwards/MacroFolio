@@ -24,10 +24,8 @@ var options = {
     popup: path.join(__dirname, "src", "js", "popup.js"),
     options: path.join(__dirname, "src", "js", "options.js"),
     background: path.join(__dirname, "src", "js", "background.js"),
-    content: path.join(__dirname, "src", "js", "content.js"),
     include: path.join(__dirname, "src", "js", "include.js"),
-    links: path.join(__dirname, "src", "js", "links.js"),
-    ip: path.join(__dirname, "src", "js", "ip.js")
+    content: path.join(__dirname, "src", "js", "content.js")
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -35,6 +33,10 @@ var options = {
   },
   module: {
     rules: [
+//      {
+//        test: /\.png$/,
+//        loader: "file-loader"
+//      },
       {
         test: /\.css$/,
         loader: "style-loader!css-loader",
