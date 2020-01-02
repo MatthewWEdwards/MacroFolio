@@ -1,6 +1,6 @@
 import css from '../css/popup.css'
 import * as d3 from 'd3'
-import { geoEqualEarth, geoPath } from 'd3-geo'
+import { geoPath } from 'd3-geo'
 
 var el = document.getElementById('num')
 el.innerHTML = chrome.storage.sync.get('num', (data)=>{
@@ -8,26 +8,16 @@ el.innerHTML = chrome.storage.sync.get('num', (data)=>{
     el.innerHTML = data.num
 })
 
+var width = 2000
+var height = 2000
 
-let old = d3.selectAll('svg')
-
-if(!(old === undefined)){
-    old.remove()
-}
-
-var width = 1000
-var height = 1000
+var projection = d3.geoEqualEarth()
 
 var svgContainer = d3.select("#d3_plot").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("border", "2px solid steelblue");
-
-console.log("FOO")
-console.log(world_countries)
+    .attr("transform", "translate(" + width/2 + "," + height/2 + ")")
 
 svgContainer.append("path")
     .datum(world_countries)
-    .attr("d", d3.geoPath());
-
-console.log("END")
+    .attr("d", d3.geoPath(projection));
