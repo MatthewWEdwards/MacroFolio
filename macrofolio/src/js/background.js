@@ -14,3 +14,16 @@ chrome.runtime.onMessage.addListener(
 export function badge_num(){
     return num
 }
+
+// Get active tab
+chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+    if(request == "is_selected") {
+        chrome.tabs.getSelected(null, function(tab){
+            if(tab.id == sender.tab.id) {
+                sendResponse(true);
+            } else {
+                sendResponse(false);
+            }
+        });
+    }
+});

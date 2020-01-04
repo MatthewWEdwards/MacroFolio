@@ -1,6 +1,11 @@
 async function send_html(){
-    let doc = document.documentElement.outerHTML
-    chrome.runtime.sendMessage({"op": "html", "doc": doc})
+    console.log("BAR")
+    chrome.extension.sendRequest("is_selected", function(isSelected) {
+        if(isSelected){
+            let doc = document.documentElement.outerHTML
+            chrome.runtime.sendMessage({"op": "html", "doc": doc})
+        } 
+    });
 }
 
 window.onload = function() { 
