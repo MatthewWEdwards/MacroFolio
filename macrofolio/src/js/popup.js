@@ -1,9 +1,10 @@
 import css from '../css/popup.css'
 import * as d3 from 'd3'
 import { geoPath } from 'd3-geo'
+import world_countries from './world-countries.json'
 
 var el = document.getElementById('num')
-el.innerHTML = chrome.storage.sync.get('num', (data)=>{
+chrome.storage.sync.get('num', (data)=>{
     var el = document.getElementById('num')
     el.innerHTML = data.num
 })
