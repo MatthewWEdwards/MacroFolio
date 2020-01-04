@@ -7,7 +7,6 @@ chrome.runtime.onMessage.addListener(
         var page_links = links(request.doc)
         updateLinks(sender.tabid, page_links)
         chrome.storage.sync.set({'num': num})
-        console.log(CSS)
       }
   }
 )

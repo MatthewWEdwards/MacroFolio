@@ -8,15 +8,17 @@ el.innerHTML = chrome.storage.sync.get('num', (data)=>{
     el.innerHTML = data.num
 })
 
-var width = 2000
-var height = 2000
+var aspect_ratio = 2.25
+var viewbox_ratio = 1.5
+var height = 300
+var width = height * aspect_ratio
 
 var projection = d3.geoEqualEarth()
 
 var svgContainer = d3.select("#d3_plot").append("svg")
+    .attr("viewBox", "0 0 " + (width * viewbox_ratio) + " " + (height * viewbox_ratio))
     .attr("width", width)
     .attr("height", height)
-    .attr("transform", "translate(" + width/2 + "," + height/2 + ")")
 
 svgContainer.append("path")
     .datum(world_countries)
