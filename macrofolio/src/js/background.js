@@ -1,4 +1,4 @@
-import { updateLinks, num } from './ip.js'
+import { updateLinks } from './ip.js'
 import { links } from './links.js'
 
 chrome.runtime.onMessage.addListener(
@@ -6,14 +6,9 @@ chrome.runtime.onMessage.addListener(
       if(request.op == "html"){
         var page_links = links(request.doc)
         updateLinks(sender.tabid, page_links)
-        chrome.storage.sync.set({'num': num})
       }
   }
 )
-
-export function badge_num(){
-    return num
-}
 
 // Get active tab
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
