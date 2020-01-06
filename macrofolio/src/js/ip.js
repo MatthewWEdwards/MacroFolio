@@ -52,21 +52,3 @@ export function updateLinks(tabId, html){
     tabToHosts[tabId] = links_arr
     links_arr.forEach((item, index, tabId)=>{processUrl(tabId, item)})
 }
-
-// Add entries: Using method 1 ( `onUpdated` )
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (changeInfo.status === 'loading' && changeInfo.url) {
-        processUrl(tabId, tab.url); // or changeInfo.url, does not matter
-    }
-});
-
-// Init: Get all windows and tabs, to fetch info for current hosts
-chrome.windows.getAll({populate: true}, function(windows) {
-    windows.forEach(function(win) {
-        if (win.type == 'normal' && win.tabs) {
-            for (var i=0; i<win.tabs.length; i++) {
-                processUrl(win.tabs[i].id, win.tabs[i].url);
-            }
-        }
-    });
-});
