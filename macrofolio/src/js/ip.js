@@ -1,5 +1,4 @@
-// SRC: https://stackoverflow.com/questions/11484910/resolve-host-to-ip-address-and-display-it-in-a-popup-using-a-chrome-extension/11487578#11487578
-
+import { links } from './links.js'
 
 export var hostToIP = {};
 export var tabToHosts = {};
@@ -48,9 +47,10 @@ export function count_ips(tabId){
     return ips.size
 }
 
-export function updateLinks(tabId, links){
-    tabToHosts[tabId] = links
-    links.forEach((item, index, tabId)=>{processUrl(tabId, item)})
+export function updateLinks(tabId, html){
+    let links_arr = links(html)
+    tabToHosts[tabId] = links_arr
+    links_arr.forEach((item, index, tabId)=>{processUrl(tabId, item)})
 }
 
 // Add entries: Using method 1 ( `onUpdated` )
