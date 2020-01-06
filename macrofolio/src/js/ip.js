@@ -1,35 +1,40 @@
 // SRC: https://stackoverflow.com/questions/11484910/resolve-host-to-ip-address-and-display-it-in-a-popup-using-a-chrome-extension/11487578#11487578
 
-export var tabToHost = {};
 export var hostToIP = {};
 export var tabToLinks = {};
-export var num = 0
+
+const ip_regex = /((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/;
 
 export function processUrl(tabId, url) {
     // Get the host part of the URL. 
     var host = url; 
     var req = 'https://dns.google.com/resolve?name=' + url
 
-    // Map tabId to host
-    tabToHost[tabId] = host ? host=host[1] : '';
+    if(hostToIP[host] !== undefined)
+        return
 
-    if (host && !hostToIP[host]) { // Known host, unknown IP
-        hostToIP[host] = 'N/A';    // Set N/A, to prevent multiple requests
-        // Get IP from a host-to-IP web service
-        var x = new XMLHttpRequest();
-        x.open('GET', req);
-        x.onload = function() {
-            var result = JSON.parse(x.responseText);
-            console.log(result)
-            if (result && result.Answer){
-                // Lookup successful, save address
-                hostToIP[host] = result.Answer[0].data
-                console.log(result.Answer[0])
+    // Get IP from a host-to-IP web service
+    var x = new XMLHttpRequest();
+    x.open('GET', req);
+    x.onload = function() {
+        var result = JSON.parse(x.responseText);
+        console.log(`${url}`)
+        console.log(result.Answer)
+
+        if (result && result.Answer){
+            // Lookup successful, save address
+            for(var i = 0; i < result.Answer.length; i++){
+                if(!ip_regex.test(result.Answer[i].data))
+                    continue
+                hostToIP[host] = result.Answer[i].data
                 return
-             }
-         };
-         x.send();
-    }
+            }
+         }
+     }
+     x.onerror = function(){
+        console.log(`TIMEOUT: ${url}`)
+     }
+     x.send();
     return
 }
 
@@ -42,19 +47,15 @@ export function setPopupInfo(tabId) { // Notify all popups
 export function updateLinks(tabId, links){
     tabToLinks[tabId] = links
     links.forEach((item, index, tabId)=>{processUrl(tabId, item)})
-    num = tabToLinks[tabId].length
+    var num = tabToLinks[tabId].length
     chrome.browserAction.setBadgeText({text: num.toString(), tabId: tabId})
+    chrome.storage.sync.set({'num': num})
 }
-
-// Remove entry from tabToIp when the tab is closed.
-chrome.tabs.onRemoved.addListener(function(tabId) {
-    delete tabToHost[tabId];
-});
 
 // Add entries: Using method 1 ( `onUpdated` )
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status === 'loading' && changeInfo.url) {
-        console.log(processUrl(tabId, tab.url)); // or changeInfo.url, does not matter
+        processUrl(tabId, tab.url); // or changeInfo.url, does not matter
     }
 });
 

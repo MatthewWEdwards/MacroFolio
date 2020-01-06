@@ -1,4 +1,4 @@
-import { updateLinks } from './ip.js'
+import { hostToIP, updateLinks } from './ip.js'
 import { links } from './links.js'
 
 chrome.runtime.onMessage.addListener(
