@@ -32,7 +32,8 @@ const circleGenerator = d3.geoCircle()
 circleGenerator.radius(circle_radius)
 
 // Circle funcs
-export function add_circle(svg){
+export function add_circle(svg, center=[0,0]){
+    circleGenerator.center(center)
     svg.append("path")
         .datum(circleGenerator())
         .attr("fill", circle_color)

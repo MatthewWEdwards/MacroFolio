@@ -26,6 +26,7 @@ export function processUrl(tabId, url) {
                     continue
                 let ip = result.Answer[i].data
                 hostToIP[host] = ip
+                chrome.storage.sync.set({'ips': hostToIP})
                 get_lat_long(ip)
                 return
             }
@@ -45,17 +46,23 @@ export function count_ips(tabId){
     if(tabToHosts[tabId] == undefined)
         return
     var ips = new Set()
-    for(var host = 0; host < tabToHosts[tabId].length; host++){
+    for(var host = 0; host < tabToHosts[tabId].length; host++)
         ips.add(hostToIP[tabToHosts[tabId][host]])
-    }
-
     return ips.size
+}
+
+export function get_ips(hosts){
+    var ips = Array()
+    for(var host = 0; host < hosts.length; host++)
+        ips.push(hostToIP[hosts[host]])
+    return ips
 }
 
 export function updateLinks(tabId, html){
     let links_arr = links(html)
     tabToHosts[tabId] = links_arr
     links_arr.forEach((item, index, tabId)=>{processUrl(tabId, item)})
+    chrome.storage.sync.set({'links': links_arr})
 }
 
 function get_lat_long(ip){
@@ -68,8 +75,9 @@ function get_lat_long(ip){
     x.open('GET', req);
     x.onload = function() {
         var result = JSON.parse(x.responseText);
-        IPtoLatLong[ip] = {latitude: result.geo.latitude, longitude: result.geo.longitude}
-        console.log(IPtoLatLong)
+        if(result.geo !== undefined)
+            IPtoLatLong[ip] = {latitude: result.geo.latitude, longitude: result.geo.longitude}
+        chrome.storage.sync.set({'latlong': IPtoLatLong})
      }
      x.send();
 }
