@@ -23,7 +23,7 @@ function draw_geo_ips(){
         for(var i = 0; i < ips.length; i++){
             let geo = data.latlong[ips[i]]
             if(geo !== undefined){
-                let center = [geo.latitude, geo.longitude]
+                let center = [geo.longitude, geo.latitude]
                 add_circle(svg, center)
             }
         }

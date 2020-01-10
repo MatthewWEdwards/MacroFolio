@@ -17,7 +17,7 @@ export function processUrl(tabId, url) {
     // Get IP from a host-to-IP web service
     var x = new XMLHttpRequest();
     x.open('GET', req);
-    x.onload = function() {
+    x.onload = async function() {
         var result = JSON.parse(x.responseText);
         if (result && result.Answer){
             // Lookup successful, save address
@@ -65,18 +65,47 @@ export function updateLinks(tabId, html){
 
 // XXX The online APIs may return a generic country Lat/Long, filter these out?
 function get_lat_long(ip){
+    //ipgeolocationapi(ip)
+    freegeoip(ip)
+}
+
+function ipgeolocationapi(ip){
     if(IPtoLatLong[ip] !== undefined)
         return
     var req = 'https://api.ipgeolocationapi.com/geolocate/' + ip
-
-    // Get IP from a host-to-IP web service
     var x = new XMLHttpRequest();
     x.open('GET', req);
-    x.onload = function() {
-        var result = JSON.parse(x.responseText);
-        if(result.geo !== undefined)
-            IPtoLatLong[ip] = {latitude: result.geo.latitude, longitude: result.geo.longitude}
-        chrome.storage.sync.set({'latlong': IPtoLatLong})
-     }
-     x.send();
+    x.ip = ip
+    x.onload = (x)=>{save_ip_handler_ipgeolocationapi(x)}
+    x.send();
 }
+
+function save_ip_handler_ipgeolocationapi(x){
+    let ip = x.srcElement.ip
+    let result = JSON.parse(x.srcElement.responseText);
+    if(result.geo !== undefined)
+        IPtoLatLong[ip] = {latitude: result.geo.latitude, longitude: result.geo.longitude}
+ }
+
+function freegeoip(ip){
+    if(IPtoLatLong[ip] !== undefined)
+        return
+    var req = 'https://freegeoip.app/json/' + ip
+    var x = new XMLHttpRequest();
+    x.open('GET', req);
+    x.ip = ip
+    x.onload = (x)=>{save_ip_handler_freegeoip(x)}
+    x.send();
+}
+
+function save_ip_handler_freegeoip(x){
+    let ip = x.srcElement.ip
+    let result = JSON.parse(x.srcElement.responseText);
+    if(result.latitude !== undefined)
+        IPtoLatLong[ip] = {latitude: result.latitude, longitude: result.longitude}
+ }
+
+setInterval(()=>{
+    chrome.storage.local.set({'ips': hostToIP})
+    chrome.storage.local.set({'latlong': IPtoLatLong})
+}, 1000)
