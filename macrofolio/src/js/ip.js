@@ -102,6 +102,8 @@ function save_ip_handler_freegeoip(x){
     let ip = x.srcElement.ip
     let result = JSON.parse(x.srcElement.responseText);
     if(result.latitude !== undefined)
+        if(result.latitude == 0 && result.longitude == 0)
+            return 
         IPtoLatLong[ip] = {latitude: result.latitude, longitude: result.longitude}
  }
 
