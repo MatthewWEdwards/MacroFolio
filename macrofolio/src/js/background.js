@@ -26,7 +26,7 @@ function set_badge(tab){
         let tabId = tab[0].id
         let num = count_ips(tabId)
         chrome.browserAction.setBadgeText({text: num.toString(), tabId: tabId})
-        chrome.storage.sync.set({'num': num})
+        chrome.storage.local.set({'num': num})
     });
 }
 

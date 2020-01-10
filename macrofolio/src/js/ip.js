@@ -26,9 +26,7 @@ export function processUrl(tabId, url) {
                     continue
                 let ip = result.Answer[i].data
                 hostToIP[host] = ip
-                chrome.storage.sync.set({'ips': hostToIP})
                 get_lat_long(ip)
-                return
             }
          }
      }
@@ -62,9 +60,10 @@ export function updateLinks(tabId, html){
     let links_arr = links(html)
     tabToHosts[tabId] = links_arr
     links_arr.forEach((item, index, tabId)=>{processUrl(tabId, item)})
-    chrome.storage.sync.set({'links': links_arr})
+    chrome.storage.local.set({'links': links_arr})
 }
 
+// XXX The online APIs may return a generic country Lat/Long, filter these out?
 function get_lat_long(ip){
     if(IPtoLatLong[ip] !== undefined)
         return
