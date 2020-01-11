@@ -39,3 +39,11 @@ export function add_circle(svg, center=[0,0]){
         .attr("fill", circle_color)
         .attr("d", d3.geoPath(projection));
 }
+
+export function map_range(svg, x, y){
+    console.log(projection.invert(x))
+    console.log(projection.invert(y))
+    svg.append("path")
+        .datum(world_countries)
+        .attr("d", d3.geoPath(projection));
+}
