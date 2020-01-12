@@ -29,8 +29,7 @@ export class GeoPoint{
      * 
      * @param {Array} geopoints An Array of GeoPoints
      *
-     * @return {Array} A Array(2) of GeoPoints. The first GeoPoint contains the minimum latitude and
-     * longitude, and the second GeoPoint contains the maximum latitude and longitude.
+     * @return {Array} A Array(2) of GeoPoints. The first GeoPoint contains the minimum latitude * and longitude, and the second GeoPoint contains the maximum latitude and longitude.
      */
     static range(geopoints){
         var min = geopoints.reduce((smallest, current) => {
@@ -43,5 +42,9 @@ export class GeoPoint{
                                  Math.max(largest.point[1], current.point[1])])
         })
         return [min, max]
+    }
+
+    static center(geo1, geo2){
+        return [(geo1.point[0] + geo2.point[0])/2, (geo1.point[1] + geo2.point[1])/2]
     }
 }
