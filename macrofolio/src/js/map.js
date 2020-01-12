@@ -41,8 +41,7 @@ export function add_circle(svg, center=[0,0]){
 }
 
 export function map_range(svg, extent){
-    console.log(extent)
-    extent.forEach((point, i, arr)=>{arr[i] = projection(point)})
+    extent.forEach((point, i, arr)=>{arr[i] = projection(point.point)})
     extent = [[Math.min(extent[0][0], extent[1][0]), Math.min(extent[0][1], extent[1][1])],
              [Math.max(extent[0][0], extent[1][0]), Math.max(extent[0][1], extent[1][1])]]
     const pad = 50
@@ -50,7 +49,6 @@ export function map_range(svg, extent){
     extent = [[Math.max(0, extent[0][0]-pad), Math.max(0, extent[0][1]-pad)],
               [Math.min(width, extent[1][0]+pad), Math.min(height, extent[1][1]+pad)]]
 
-    console.log(extent)
     projection.clipExtent(extent)
     svg.append("path")
         .datum(world_countries)
