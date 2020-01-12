@@ -62,6 +62,20 @@ export function map_range(svg, extent){
 
     let top_left  = [Math.max(0, cx - clip_width), Math.max(0, cy - clip_height)]
     let bot_right = [Math.min(cut_width, cx + clip_width), Math.min(cut_height, cy + clip_height)]
+
+    // Scale
+    let new_width  = (bot_right[0] - top_left[0])
+    let new_height = (bot_right[1] - top_left[1])
+    let dialation_x = new_width/cut_width
+    let dialation_y = new_height/cut_height
+    let new_scale = Math.min(dialation_x, dialation_y)
+    projection.scale(100/new_scale)
+
+    top_left[0] = top_left[0] - top_left[0]*new_scale
+    top_left[1] = top_left[1] - top_left[1]*new_scale
+    bot_right[0] = bot_right[0]/new_scale
+    bot_right[1] = bot_right[1]/new_scale
+
     let clip = [top_left, bot_right]
     projection.clipExtent(clip)
 
