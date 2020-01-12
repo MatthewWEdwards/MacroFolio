@@ -19,6 +19,19 @@ export class GeoPoint{
         this.host = ""
         this.ip = ""
     }
+
+    static range(geopoints){
+        var min = geopoints.reduce((smallest, current) => {
+            return new GeoPoint([Math.min(smallest.point[0], current.point[0]),
+                                 Math.min(smallest.point[1], current.point[1])])
+
+        })
+       var max = geopoints.reduce((largest, current) => {
+            return new GeoPoint([Math.max(largest.point[0], current.point[0]),
+                                 Math.max(largest.point[1], current.point[1])])
+        })
+        return [min, max]
+    }
 }
 
 export function processUrl(tabId, url) {

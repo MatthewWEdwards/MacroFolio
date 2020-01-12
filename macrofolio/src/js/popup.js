@@ -20,16 +20,7 @@ var svg = setup_svg(map_id)
 async function latlong_range(){
     return new Promise( async (resolve, reject) => {
         var geos = await get_geopoints()
-        var min = geos.reduce((smallest, current) => {
-            return new GeoPoint([Math.min(smallest.point[0], current.point[0]),
-                                 Math.min(smallest.point[1], current.point[1])])
-
-        })
-       var max = geos.reduce((largest, current) => {
-            return new GeoPoint([Math.max(largest.point[0], current.point[0]),
-                                 Math.max(largest.point[1], current.point[1])])
-        })
-       resolve([min, max])
+        resolve(GeoPoint.range(geos))
     })
 }
 
