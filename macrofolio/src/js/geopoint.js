@@ -27,9 +27,9 @@ export class GeoPoint{
     /** 
      * Calculates the maximum and minimum latitudes and longitudes from a set of GeoPoints.
      * 
-     * @param geopoints An Array of GeoPoints
+     * @param {Array} geopoints An Array of GeoPoints
      *
-     * @return A Array(2) of GeoPoints. The first GeoPoint contains the minimum latitude and
+     * @return {Array} A Array(2) of GeoPoints. The first GeoPoint contains the minimum latitude and
      * longitude, and the second GeoPoint contains the maximum latitude and longitude.
      */
     static range(geopoints){

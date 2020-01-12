@@ -36,12 +36,6 @@ export function processUrl(tabId, url) {
     return
 }
 
-export function setPopupInfo(tabId) { // Notify all popups
-    chrome.extension.getViews({type:'popup'}).forEach(function(global) {
-        global.notify(tabId);
-    });
-}
-
 export function count_ips(tabId){
     if(tabToHosts[tabId] == undefined)
         return
