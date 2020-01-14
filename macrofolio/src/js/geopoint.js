@@ -47,4 +47,33 @@ export class GeoPoint{
     static center(geo1, geo2){
         return [(geo1.point[0] + geo2.point[0])/2, (geo1.point[1] + geo2.point[1])/2]
     }
+
+    toCartesian(projection){
+        return new CartesianPoint(projection(this.point), this.host, this.ip)
+    }
+}
+
+export class CartesianPoint{
+    constructor(point, host="", ip=""){
+        this.host  = host
+        this.ip    = ip
+        this.point = point
+    }
+    
+    static range(cartesianpoints){
+        var min = cartesianpoints.reduce((smallest, current) => {
+            return new CartesianPoint([Math.min(smallest.point[0], current.point[0]),
+                                 Math.min(smallest.point[1], current.point[1])])
+
+        })
+       var max = cartesianpoints.reduce((largest, current) => {
+            return new CartesianPoint([Math.max(largest.point[0], current.point[0]),
+                                 Math.max(largest.point[1], current.point[1])])
+        })
+        return [min, max]
+    }
+
+    toGeo(projection){
+        return new GeoPoint(projection.invert(this.point), this.host, this.ip)
+    }
 }
