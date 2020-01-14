@@ -1,51 +1,50 @@
-/**
- * A class for correlating the IP of a host, and the estimated latitude and longitude of that IP.
- * This class is also used to store latitude and longitude points uncorrelated to a host or IP
- */
-export class GeoPoint{
-    /**
-     * @param {Array} point A 2-length array containing the longitude and latitude respectively
-     * @param {string} host The url this point corresponds to
-     * @param {string} ip The endpoint IP of the host
-     */
+// TODO: Make this N-dimensional?
+export class Point{
     constructor(point, host="", ip=""){
         this.host  = host
         this.ip    = ip
         this.point = point
     }
 
-    /**
-     * Set the host and ip strings to emptystrings. This is usually done when some operation is
-     * performed on the GeoPoint Lat/Long such that the Lat/Long no longer corresponds to a
-     * particular host and IP
-     */
     strip(){
         this.host = ""
         this.ip = ""
     }
 
     /** 
-     * Calculates the maximum and minimum latitudes and longitudes from a set of GeoPoints.
+     * Calculates the maximum and minimum latitudes and longitudes from a set of Points.
      * 
-     * @param {Array} geopoints An Array of GeoPoints
+     * @param {Array} points An Array of Points
      *
-     * @return {Array} A Array(2) of GeoPoints. The first GeoPoint contains the minimum latitude * and longitude, and the second GeoPoint contains the maximum latitude and longitude.
+     * @return {Array} A Array(2) of Points. The first Point contains the minimum dimensions of 
+     * the points array, and the second Point contains the maximum values.
      */
-    static range(geopoints){
-        var min = geopoints.reduce((smallest, current) => {
+    static range(points){
+        var min = points.reduce((smallest, current) => {
             return new GeoPoint([Math.min(smallest.point[0], current.point[0]),
                                  Math.min(smallest.point[1], current.point[1])])
 
         })
-       var max = geopoints.reduce((largest, current) => {
+       var max = points.reduce((largest, current) => {
             return new GeoPoint([Math.max(largest.point[0], current.point[0]),
                                  Math.max(largest.point[1], current.point[1])])
         })
         return [min, max]
     }
 
-    static center(geo1, geo2){
-        return [(geo1.point[0] + geo2.point[0])/2, (geo1.point[1] + geo2.point[1])/2]
+    static center(point1, point2){
+        return [(point1.point[0] + point2.point[0])/2, (point1.point[1] + point2.point[1])/2]
+    }
+}
+
+
+/**
+ * A class for correlating the IP of a host, and the estimated latitude and longitude of that IP.
+ * This class is also used to store latitude and longitude points uncorrelated to a host or IP
+ */
+export class GeoPoint extends Point{
+    //TODO
+    is_valid(){
     }
 
     toCartesian(projection){
@@ -53,27 +52,10 @@ export class GeoPoint{
     }
 }
 
-export class CartesianPoint{
-    constructor(point, host="", ip=""){
-        this.host  = host
-        this.ip    = ip
-        this.point = point
-    }
-    
-    static range(cartesianpoints){
-        var min = cartesianpoints.reduce((smallest, current) => {
-            return new CartesianPoint([Math.min(smallest.point[0], current.point[0]),
-                                 Math.min(smallest.point[1], current.point[1])])
-
-        })
-       var max = cartesianpoints.reduce((largest, current) => {
-            return new CartesianPoint([Math.max(largest.point[0], current.point[0]),
-                                 Math.max(largest.point[1], current.point[1])])
-        })
-        return [min, max]
-    }
-
+export class CartesianPoint extends Point{
     toGeo(projection){
         return new GeoPoint(projection.invert(this.point), this.host, this.ip)
     }
 }
+
+

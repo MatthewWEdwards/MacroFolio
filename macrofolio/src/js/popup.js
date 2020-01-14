@@ -1,7 +1,7 @@
 import css from '../css/popup.css'
 import { setup_svg, draw_map, add_circle, map_range } from './map.js'
 import { get_geopoints } from './ip.js'
-import { GeoPoint } from './geopoint.js'
+import { Point } from './geopoint.js'
 
 // popup.html consts
 const map_id = "#d3_plot"
@@ -21,7 +21,7 @@ var svg = setup_svg(map_id)
 async function latlong_range(){
     return new Promise( async (resolve, reject) => {
         var geos = await get_geopoints()
-        resolve(GeoPoint.range(geos))
+        resolve(Point.range(geos))
     })
 }
 

@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 import { geoPath } from 'd3-geo'
 import world_countries from './world-countries.json'
-import { GeoPoint, CartesianPoint } from './geopoint.js'
+import { Point, GeoPoint, CartesianPoint } from './geopoint.js'
 
 class RenderPolicy{
     constructor(crop=true, center=false, scale=false){
@@ -55,7 +55,7 @@ export function map_range(svg, extent, geos, policy){
 
 
     // Center
-    var center = GeoPoint.center(extent[0], extent[1])
+    var center = Point.center(extent[0], extent[1])
     if(policy.center)
         projection.center(center)
     
@@ -87,7 +87,7 @@ export function map_range(svg, extent, geos, policy){
         let carts = Array()
         geos.forEach((geo)=>{carts.push(geo.toCartesian(projection))})
         console.log(carts)
-        let extremes = CartesianPoint.range(carts)
+        let extremes = Point.range(carts)
         let top_left = extremes[0].point
         let bot_right = extremes[1].point
 
@@ -115,7 +115,7 @@ export function map_range(svg, extent, geos, policy){
     }
 
     if(policy.crop){
-        //projection.clipExtent(clip)
+        projection.clipExtent(clip)
     }
     if(policy.scale){
         projection.scale(100/new_scale)
