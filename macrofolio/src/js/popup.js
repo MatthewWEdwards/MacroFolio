@@ -38,7 +38,7 @@ function draw_geopoints(){
 
 async function render(){
     var svg_range = await latlong_range()
-    map_range(svg, svg_range)
+    map_range(svg, svg_range, await get_geopoints())
     draw_geopoints()
 }
 
