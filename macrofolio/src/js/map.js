@@ -4,10 +4,10 @@ import world_countries from './world-countries.json'
 import { Point, GeoPoint, CartesianPoint } from './geopoint.js'
 
 class RenderPolicy{
-    constructor(crop=true, center=false, scale=false){
-       this.crop = crop
+    constructor(center=true, scale=true, debug=true){
        this.center = center
        this.scale = scale
+       this.debug = debug
     }
 }
 
@@ -36,7 +36,7 @@ export function draw_map(svg){
 
 // Circle consts
 const circle_color = "#ff0000"
-const circle_radius = 7
+const circle_radius = 1
 const circleGenerator = d3.geoCircle()
 circleGenerator.radius(circle_radius)
 
@@ -59,8 +59,8 @@ export function map_range(svg, extent, geos, policy){
     if(policy.center)
         projection.center(center)
     
-    // Clip
-    const pad = 50
+    // Get extreme top-left and bottom-right points
+    const pad = 25
     let extent_geo = extent.map(point => projection(point.point))
     let clip, top_left, bot_right
 
@@ -76,20 +76,18 @@ export function map_range(svg, extent, geos, policy){
         let cx = center_xy[0]
         let cy = center_xy[1]
 
-        let top_left  = [Math.max(0, cx - clip_width), Math.max(0, cy - clip_height)]
-        let bot_right = [Math.min(cut_width, cx + clip_width), Math.min(cut_height, cy + clip_height)]
+        top_left  = [Math.max(0, cx - clip_width), Math.max(0, cy - clip_height)]
+        bot_right = [Math.min(cut_width, cx + clip_width), Math.min(cut_height, cy + clip_height)]
 
         clip = [top_left, bot_right]
 
-        add_circle(svg, projection.invert(top_left), "#00ff00")
-        add_circle(svg, projection.invert(bot_right), "#0000ff")
     }else{
         let carts = Array()
         geos.forEach((geo)=>{carts.push(geo.toCartesian(projection))})
         console.log(carts)
         let extremes = Point.range(carts)
-        let top_left = extremes[0].point
-        let bot_right = extremes[1].point
+        top_left = extremes[0].point
+        bot_right = extremes[1].point
 
         top_left[0] = Math.max(0, top_left[0] - pad)
         top_left[1] = Math.max(0, top_left[1] - pad)
@@ -100,25 +98,27 @@ export function map_range(svg, extent, geos, policy){
     }
 
     // Scale
+    let new_scale
     if(policy.scale){
         let new_width  = (bot_right[0] - top_left[0])
         let new_height = (bot_right[1] - top_left[1])
         let dialation_x = new_width/cut_width
         let dialation_y = new_height/cut_height
         console.log(`dx: ${dialation_x}, dy: ${dialation_y}`)
-        let new_scale = Math.min(dialation_x, dialation_y)
+        new_scale = Math.min(dialation_x, dialation_y)
+        console.log(new_scale)
 
-        top_left[0] = top_left[0] - top_left[0]*new_scale
-        top_left[1] = top_left[1] - top_left[1]*new_scale
+        top_left[0] = top_left[0] - top_left[0]/(1-new_scale)
+        top_left[1] = top_left[1] - top_left[1]/(1-new_scale)
         bot_right[0] = bot_right[0]/new_scale
         bot_right[1] = bot_right[1]/new_scale
+        projection.scale(100/new_scale)
     }
 
-    if(policy.crop){
-        projection.clipExtent(clip)
-    }
-    if(policy.scale){
-        projection.scale(100/new_scale)
+    // Debug
+    if(policy.debug){
+        add_circle(svg, projection.invert(top_left), "#00ff00")
+        add_circle(svg, projection.invert(bot_right), "#0000ff")
     }
 
     svg.append("path")
