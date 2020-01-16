@@ -1,5 +1,5 @@
 import css from '../css/popup.css'
-import { setup_svg, draw_map, add_circle, map_range } from './map.js'
+import { RenderPolicy, setup_svg, add_circle, map_range } from './map.js'
 import { get_geopoints } from './ip.js'
 import { Point } from './geopoint.js'
 
@@ -13,7 +13,6 @@ chrome.storage.local.get('num', (data)=>{
     el.innerHTML = data.num
 })
 
-var svg = setup_svg(map_id)
 
 /**
  * Returns the minimum and maximum latitudes and longitudes for the currently active links
@@ -28,7 +27,7 @@ async function latlong_range(){
 /**
  * Draw circles on the geolocation of the endpoint IP of the currently active links
  */
-function draw_geopoints(){
+function draw_geopoints(svg){
     get_geopoints().then((geos)=>{
         geos.forEach((geo)=>{
             add_circle(svg, geo.point)
@@ -37,9 +36,16 @@ function draw_geopoints(){
 }
 
 async function render(){
+    let svg = setup_svg(map_id)
+    let center = document.getElementById('center').checked
+    let scale = document.getElementById('scale').checked
+    let policy = new RenderPolicy(center, scale)
     var svg_range = await latlong_range()
     map_range(svg, svg_range, await get_geopoints())
-    draw_geopoints()
+    draw_geopoints(svg)
 }
+
+document.getElementById('center').onclick = render
+document.getElementById('scale').onclick = render
 
 render()

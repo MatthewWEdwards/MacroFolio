@@ -3,7 +3,7 @@ import { geoPath } from 'd3-geo'
 import world_countries from './world-countries.json'
 import { Point, GeoPoint, CartesianPoint } from './geopoint.js'
 
-class RenderPolicy{
+export class RenderPolicy{
     constructor(center=true, scale=true, debug=true){
        this.center = center
        this.scale = scale
@@ -13,6 +13,10 @@ class RenderPolicy{
 
 // SVG utils
 export function setup_svg(id){
+    let old = d3.selectAll('svg')
+    if(!(old === undefined))
+        old.remove()
+
     var svg = d3.select(id).append("svg")
         .attr("viewBox", "0 0 " + (width * viewbox_ratio) + " " + (height * viewbox_ratio))
         .attr("width", width)
@@ -53,7 +57,6 @@ export function map_range(svg, extent, geos, policy){
     if(policy == undefined || typeof policy != RenderPolicy)
         policy = new RenderPolicy()
 
-
     // Center
     var center = Point.center(extent[0], extent[1])
     if(policy.center)
@@ -78,13 +81,11 @@ export function map_range(svg, extent, geos, policy){
 
         top_left  = [Math.max(0, cx - clip_width), Math.max(0, cy - clip_height)]
         bot_right = [Math.min(cut_width, cx + clip_width), Math.min(cut_height, cy + clip_height)]
-
         clip = [top_left, bot_right]
 
     }else{
         let carts = Array()
         geos.forEach((geo)=>{carts.push(geo.toCartesian(projection))})
-        console.log(carts)
         let extremes = Point.range(carts)
         top_left = extremes[0].point
         bot_right = extremes[1].point
@@ -93,7 +94,6 @@ export function map_range(svg, extent, geos, policy){
         top_left[1] = Math.max(0, top_left[1] - pad)
         bot_right[0] = Math.min(cut_width, bot_right[0] + pad)
         bot_right[1] = Math.min(cut_height, bot_right[1] + pad)
-
         clip = [top_left, bot_right]
     }
 
@@ -104,9 +104,7 @@ export function map_range(svg, extent, geos, policy){
         let new_height = (bot_right[1] - top_left[1])
         let dialation_x = new_width/cut_width
         let dialation_y = new_height/cut_height
-        console.log(`dx: ${dialation_x}, dy: ${dialation_y}`)
         new_scale = Math.min(dialation_x, dialation_y)
-        console.log(new_scale)
 
         top_left[0] = top_left[0] - top_left[0]/(1-new_scale)
         top_left[1] = top_left[1] - top_left[1]/(1-new_scale)

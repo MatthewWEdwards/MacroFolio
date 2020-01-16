@@ -2,7 +2,6 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <script src="popup.bundle.js"></script>
   </head>
   <body>
     <table id="table">
@@ -16,5 +15,8 @@
       </tr>
     </table>
     <div id="d3_plot"/>
+    <input checked=true type="checkbox" id="center" onclick="render()">Center</input>
+    <input checked=true type="checkbox" id="scale" onclick="render()">Scale</input>
   </body>
+  <script src="popup.bundle.js"></script>
 </html>
