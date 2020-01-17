@@ -4,7 +4,7 @@ import world_countries from './world-countries.json'
 import { Point, GeoPoint, CartesianPoint } from './geopoint.js'
 
 export class RenderPolicy{
-    constructor(center=true, scale=true, debug=true){
+    constructor(center=true, scale=true, debug=false){
        this.center = center
        this.scale = scale
        this.debug = debug
@@ -29,14 +29,7 @@ const aspect_ratio = 2.25
 const viewbox_ratio = 1.5
 const height = 300
 const width = height * aspect_ratio
-const projection = d3.geoEqualEarth()
-
-// World map funcs
-export function draw_map(svg){
-    svg.append("path")
-        .datum(world_countries)
-        .attr("d", d3.geoPath(projection));
-}
+var projection = d3.geoEqualEarth()
 
 // Circle consts
 const circle_color = "#ff0000"
@@ -54,8 +47,11 @@ export function add_circle(svg, center=[0,0], color=circle_color){
 }
 
 export function map_range(svg, extent, geos, policy){
-    if(policy == undefined || typeof policy != RenderPolicy)
+    projection = d3.geoEqualEarth() // Reset projection
+
+    if(policy == undefined || typeof policy != typeof new RenderPolicy()){
         policy = new RenderPolicy()
+    }
 
     // Center
     var center = Point.center(extent[0], extent[1])

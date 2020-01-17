@@ -13,7 +13,6 @@ chrome.storage.local.get('num', (data)=>{
     el.innerHTML = data.num
 })
 
-
 /**
  * Returns the minimum and maximum latitudes and longitudes for the currently active links
  */
@@ -35,13 +34,22 @@ function draw_geopoints(svg){
     })
 }
 
+var geopoints, svg_range
+async function initialize(){
+    geopoints = await get_geopoints()
+    svg_range = await latlong_range()
+}
+
 async function render(){
+    if(geopoints == undefined || svg_range == undefined)
+        await initialize()
     let svg = setup_svg(map_id)
     let center = document.getElementById('center').checked
     let scale = document.getElementById('scale').checked
     let policy = new RenderPolicy(center, scale)
-    var svg_range = await latlong_range()
-    map_range(svg, svg_range, await get_geopoints())
+    console.log(svg_range)
+    console.log(geopoints)
+    map_range(svg, svg_range, geopoints, policy)
     draw_geopoints(svg)
 }
 
