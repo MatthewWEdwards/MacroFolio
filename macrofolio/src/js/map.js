@@ -33,17 +33,25 @@ const width = height * aspect_ratio
 // Circle consts
 const circle_color = "#ff0000"
 const circle_radius = 1
+
+// Circle vars
+var projection = d3.geoEqualEarth()
 const circleGenerator = d3.geoCircle()
 circleGenerator.radius(circle_radius)
+var circle_cnt = 0
+var target
 
-var projection = d3.geoEqualEarth()
 // Circle funcs
 export function add_circle(svg, center=[0,0], color=circle_color){
     circleGenerator.center(center)
+    let circle_id = "circle_" + circle_cnt
+    circle_cnt += 1
     svg.append("path")
         .datum(circleGenerator())
         .attr("fill", color)
+        .attr("id", circle_id)
         .attr("d", d3.geoPath(projection));
+    return "#" + circle_id
 }
 
 export function map_range(svg, extent, geos, policy){
@@ -119,6 +127,24 @@ export function map_range(svg, extent, geos, policy){
         .datum(world_countries)
         .attr("d", d3.geoPath(projection));
 
+    // Init dynamic map
+    init_dynamic_map(svg)
+
     return projection
 }
 
+function init_dynamic_map(svg){
+    d3.select("svg").on("mousedown.log", function() {
+      let target_loc = new GeoPoint(projection.invert(d3.mouse(this)))
+      set_target_loc(svg, target_loc)
+    });
+}
+
+function set_target_loc(svg, loc){
+    remove_target(svg)
+    target = add_circle(svg, loc.point, "#00ffff")
+}
+
+function remove_target(svg){
+    d3.select(target).remove()
+}

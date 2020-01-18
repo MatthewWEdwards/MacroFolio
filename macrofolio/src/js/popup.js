@@ -31,4 +31,5 @@ function initialize(){
     document.getElementById('scale').onclick = render
     render()
 }
+
 initialize()
