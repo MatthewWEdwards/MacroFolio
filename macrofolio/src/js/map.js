@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 import { geoPath } from 'd3-geo'
 import world_countries from './world-countries.json'
-import { Point, GeoPoint, CartesianPoint } from './geopoint.js'
+import { Point, GeoPoint, CartesianPoint } from './point.js'
 
 export class RenderPolicy{
     constructor(center=true, scale=true, debug=false){
@@ -29,7 +29,6 @@ const aspect_ratio = 2.25
 const viewbox_ratio = 1.5
 const height = 300
 const width = height * aspect_ratio
-var projection = d3.geoEqualEarth()
 
 // Circle consts
 const circle_color = "#ff0000"
@@ -37,6 +36,7 @@ const circle_radius = 1
 const circleGenerator = d3.geoCircle()
 circleGenerator.radius(circle_radius)
 
+var projection = d3.geoEqualEarth()
 // Circle funcs
 export function add_circle(svg, center=[0,0], color=circle_color){
     circleGenerator.center(center)
@@ -118,5 +118,7 @@ export function map_range(svg, extent, geos, policy){
     svg.append("path")
         .datum(world_countries)
         .attr("d", d3.geoPath(projection));
+
+    return projection
 }
 

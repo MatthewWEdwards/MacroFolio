@@ -1,7 +1,7 @@
 import css from '../css/popup.css'
 import { RenderPolicy, setup_svg, add_circle, map_range } from './map.js'
 import { get_geopoints } from './ip.js'
-import { Point } from './geopoint.js'
+import { Point } from './point.js'
 
 // popup.html consts
 const map_id = "#d3_plot"

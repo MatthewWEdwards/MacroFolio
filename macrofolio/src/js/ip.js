@@ -1,6 +1,6 @@
 import { links } from './links.js'
 import { getStorageData } from './utils/storage.js'
-import { GeoPoint } from './geopoint.js'
+import { GeoPoint } from './point.js'
 
 var hostToIP = {};
 var tabToHosts = {};
