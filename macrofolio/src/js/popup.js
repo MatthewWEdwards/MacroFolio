@@ -13,47 +13,22 @@ chrome.storage.local.get('num', (data)=>{
     el.innerHTML = data.num
 })
 
-/**
- * Returns the minimum and maximum latitudes and longitudes for the currently active links
- */
-async function latlong_range(){
-    return new Promise( async (resolve, reject) => {
-        var geos = await get_geopoints()
-        resolve(Point.range(geos))
-    })
-}
-
-/**
- * Draw circles on the geolocation of the endpoint IP of the currently active links
- */
-function draw_geopoints(svg){
-    get_geopoints().then((geos)=>{
-        geos.forEach((geo)=>{
-            add_circle(svg, geo.point)
-        })
-    })
-}
-
-var geopoints, svg_range
-async function initialize(){
-    geopoints = await get_geopoints()
-    svg_range = await latlong_range()
-}
-
+var geopoints
 async function render(){
-    if(geopoints == undefined || svg_range == undefined)
-        await initialize()
+    if(geopoints == undefined)
+       geopoints  = await get_geopoints()
+    let svg_range = Point.range(geopoints)
     let svg = setup_svg(map_id)
     let center = document.getElementById('center').checked
     let scale = document.getElementById('scale').checked
     let policy = new RenderPolicy(center, scale)
-    console.log(svg_range)
-    console.log(geopoints)
-    map_range(svg, svg_range, geopoints, policy)
-    draw_geopoints(svg)
+    let projection = await map_range(svg, svg_range, geopoints, policy)
+    geopoints.forEach((geo)=>{add_circle(svg, geo.point)}) // Draw geopoints
 }
 
-document.getElementById('center').onclick = render
-document.getElementById('scale').onclick = render
-
-render()
+function initialize(){
+    document.getElementById('center').onclick = render
+    document.getElementById('scale').onclick = render
+    render()
+}
+initialize()
