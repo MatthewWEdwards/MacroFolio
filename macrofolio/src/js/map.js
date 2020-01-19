@@ -40,6 +40,7 @@ const circleGenerator = d3.geoCircle()
 circleGenerator.radius(circle_radius)
 var circle_cnt = 0
 var target
+var circles = {}
 
 // Circle funcs
 export function add_circle(svg, center=[0,0], color=circle_color){
@@ -51,7 +52,9 @@ export function add_circle(svg, center=[0,0], color=circle_color){
         .attr("fill", color)
         .attr("id", circle_id)
         .attr("d", d3.geoPath(projection));
-    return "#" + circle_id
+    circle_id = "#" + circle_id
+    circles[circle_id] = center
+    return circle_id
 }
 
 export function map_range(svg, extent, geos, policy){
@@ -136,15 +139,47 @@ export function map_range(svg, extent, geos, policy){
 function init_dynamic_map(svg){
     d3.select("svg").on("mousedown.log", function() {
       let target_loc = new GeoPoint(projection.invert(d3.mouse(this)))
-      set_target_loc(svg, target_loc)
+      set_target_loc(svg, target_loc.point)
     });
 }
 
 function set_target_loc(svg, loc){
     remove_target(svg)
-    target = add_circle(svg, loc.point, "#00ffff")
+    target = add_circle(svg, loc, "#00ffff")
+    for(const circle_id in circles){
+        let path_obj = gen_path(circles[circle_id], loc)
+        draw_path(svg, path_obj)
+    }
 }
 
 function remove_target(svg){
     d3.select(target).remove()
+    delete circles[target]
+    svg.selectAll(".twopath").remove()
+}
+
+function gen_path(source, target){
+     let path_obj =
+     {
+       "type": "Feature",
+       "geometry": {
+          "type": "LineString",
+          "coordinates": [
+              source,
+              target
+          ]
+       }
+     }
+     return path_obj
+}
+
+function draw_path(svg, path_obj){
+    svg.append("path")
+        .datum(path_obj)
+        .attr("class", "twopath")
+        .attr("fill-opacity", "0")
+        .attr("stroke-opacity", "1")
+        .attr("stroke-width", "1")
+        .attr("stroke", "#cccccc")
+        .attr("d", d3.geoPath(projection));
 }
