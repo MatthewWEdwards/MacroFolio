@@ -20,7 +20,7 @@ async function render(){
     let svg_range = Point.range(geopoints)
     let svg = setup_svg(map_id)
     let center = document.getElementById('center').checked
-    let scale = document.getElementById('scale').checked
+    let scale = document.getElementById('center').checked
     let policy = new RenderPolicy(center, scale)
     let projection = await map_range(svg, svg_range, geopoints, policy)
     geopoints.forEach((geo)=>{add_circle(svg, geo.point)}) // Draw geopoints
@@ -28,7 +28,6 @@ async function render(){
 
 function initialize(){
     document.getElementById('center').onclick = render
-    document.getElementById('scale').onclick = render
     render()
 }
 
