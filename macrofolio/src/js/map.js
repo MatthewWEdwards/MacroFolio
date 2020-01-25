@@ -11,24 +11,11 @@ export class RenderPolicy{
     }
 }
 
-// SVG utils
-export function setup_svg(id){
-    let old = d3.selectAll('svg')
-    if(!(old === undefined))
-        old.remove()
-
-    var svg = d3.select(id).append("svg")
-        .attr("viewBox", "0 0 " + (width * viewbox_ratio) + " " + (height * viewbox_ratio))
-        .attr("width", width)
-        .attr("height", height)
-    return svg
-}
-
 // World map consts
 const aspect_ratio = 2.25
 const viewbox_ratio = 1.5
-const height = 300
-const width = height * aspect_ratio
+var height = 300
+var width = height * aspect_ratio
 
 // Circle consts
 const circle_color = "#ff0000"
@@ -41,6 +28,20 @@ circleGenerator.radius(circle_radius)
 var circle_cnt = 0
 var target
 var circles = {}
+
+
+// SVG utils
+export function setup_svg(id){
+    let old = d3.selectAll('svg')
+    if(!(old === undefined))
+        old.remove()
+
+    var svg = d3.select(id).append("svg")
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 " + (width * viewbox_ratio) + " " + (height * viewbox_ratio))
+        .classed("svg-content", true);
+    return svg
+}
 
 // Circle funcs
 export function add_circle(svg, center=[0,0], color=circle_color){

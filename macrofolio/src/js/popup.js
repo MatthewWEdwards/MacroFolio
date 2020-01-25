@@ -3,6 +3,12 @@ import { RenderPolicy, setup_svg, add_circle, map_range } from './map.js'
 import { get_geopoints } from './ip.js'
 import { Point } from './point.js'
 
+// Includes
+import './bootstrap.min.css'
+import '../fonts/Gudea-Bold.ttf'
+import '../fonts/Gudea-Italic.ttf'
+import '../fonts/Gudea-Regular.ttf'
+
 // popup.html consts
 const map_id = "#d3_plot"
 

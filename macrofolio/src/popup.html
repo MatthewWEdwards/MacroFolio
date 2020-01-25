@@ -2,30 +2,27 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Gudea&display=swap" rel="stylesheet">
   </head>
   <body>
-    <table id="table">
-      <tr>
-        <td>
-          <h2>Total unique IP endpoints: </h2>
-        </td>
-        <td>
-          <p id="num">0</p>
-        </td>
-      </tr>
-    </table>
-    <div id="d3_plot"/>
-    <input checked=true type="checkbox" id="center" onclick="render()">Center</input>
-    <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Dropdown button
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#">Action</a>
-        <a class="dropdown-item" href="#">Another action</a>
-        <a class="dropdown-item" href="#">Something else here</a>
-      </div>
-    </div>
+        <div class="row" id="ip-count">
+            <div class="col" id="endpoints-label">
+                <div>Total unique IP endpoints:</div>
+            </div>
+            <div class="col" id="endpoints-num">
+                <div id="num">0</div>
+            </div>
+        </div>
+        <div class="row" id="controls">
+            <div class="col">
+                <div id="checkbox" class="checkbox col">
+                    <input checked=true type="checkbox" id="center" onclick="render()">Center</input>
+                </div>
+            </div>
+            <div class="col">
+                <div id="d3_plot" class="svg-container"/>
+            </div>
+        </div>
   </body>
   <script src="popup.bundle.js"></script>
 </html>
