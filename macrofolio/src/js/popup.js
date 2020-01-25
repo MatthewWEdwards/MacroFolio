@@ -1,10 +1,13 @@
 import css from '../css/popup.css'
-import { RenderPolicy, setup_svg, add_circle, map_range } from './map.js'
+import { RenderPolicy, setup_svg, add_circle, map_range, set_padding } from './map.js'
 import { get_geopoints } from './ip.js'
 import { Point } from './point.js'
 
 // Includes
+import './popper.min.js'
+import './jquery.min.js'
 import './bootstrap.min.css'
+import './bootstrap.min.js'
 import '../fonts/Gudea-Bold.ttf'
 import '../fonts/Gudea-Italic.ttf'
 import '../fonts/Gudea-Regular.ttf'
@@ -35,6 +38,10 @@ async function render(){
 function initialize(){
     document.getElementById('center').onclick = render
     render()
+
+    document.getElementById('pad-large').addEventListener("click", ()=>{set_padding(25);render()})
+    document.getElementById('pad-medium').addEventListener("click", ()=>{set_padding(50);render()})
+    document.getElementById('pad-small').addEventListener("click", ()=>{set_padding(100);render()})
 }
 
 initialize()

@@ -13,13 +13,46 @@
                 <div id="num">0</div>
             </div>
         </div>
-        <div class="row" id="controls">
-            <div class="col">
-                <div id="checkbox" class="checkbox col">
-                    <input checked=true type="checkbox" id="center" onclick="render()">Center</input>
+        <div class="flex-container container" id="controls">
+            <div class="item">
+                <div class="row">
+                    <p class="col">
+                        Center
+                    </p>
+                    <input class="col checkbox" checked=true type="checkbox" id="center" onclick="render()"></input>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="btn-group">
+                              <div class="container" id="pad-btns">
+                                  <div class="row">
+                                    <div class="col">
+                                        Zoom
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col">
+                                      <button type="button" id="pad-large" class="btn-block btn btn-primary">Small</button>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col">
+                                      <button type="button" id="pad-medium" class="btn-block btn btn-primary">Medium</button>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col">
+                                      <button type="button" id="pad-small" class="btn-block btn btn-primary">Large</button>
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col">
+            <div class="item">
                 <div id="d3_plot" class="svg-container"/>
             </div>
         </div>

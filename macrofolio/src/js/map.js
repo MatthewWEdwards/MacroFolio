@@ -16,6 +16,7 @@ const aspect_ratio = 2.25
 const viewbox_ratio = 1.5
 var height = 300
 var width = height * aspect_ratio
+var pad = 25
 
 // Circle consts
 const circle_color = "#ff0000"
@@ -28,6 +29,10 @@ circleGenerator.radius(circle_radius)
 var circle_cnt = 0
 var target
 var circles = {}
+
+export function set_padding(padding){
+    pad = padding
+}
 
 
 // SVG utils
@@ -71,7 +76,6 @@ export function map_range(svg, extent, geos, policy){
         projection.center(center)
     
     // Get extreme top-left and bottom-right points
-    const pad = 25
     let extent_geo = extent.map(point => projection(point.point))
     let clip, top_left, bot_right
 

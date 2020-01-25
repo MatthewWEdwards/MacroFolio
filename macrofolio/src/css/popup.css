@@ -9,6 +9,8 @@ body *{
 }
 
 #endpoints-label{
+    width: 300px;
+    padding: 0;
 }
 
 #endpoints-num{
@@ -16,13 +18,21 @@ body *{
 
 
 #center{
-    width: 100px;
+    width: 150px;
+    padding-top: 25px;
+    height: 20px;
+}
+
+.checkbox{
+    vertical-align: center;
+    height: 20px;
 }
 
 #d3_plot{
-    width: 500px;
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
 }
-
 
 .svg-container {
     display: inline-block;
@@ -38,3 +48,19 @@ body *{
     top: 0;
     left: 0;
 }
+
+.flex-container{
+    flex-wrap: nowrap;
+    display: flex;
+    flex-direction: row;
+}
+
+.item{
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+#pad-btns{
+    align-items: left;
+}
+
