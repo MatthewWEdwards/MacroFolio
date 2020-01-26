@@ -3,37 +3,53 @@ import { geoPath } from 'd3-geo'
 import world_countries from './world-countries.json'
 import { Point, GeoPoint, CartesianPoint } from './point.js'
 
-export class RenderPolicy{
-    constructor(center=true, scale=true, debug=false){
-       this.center = center
-       this.scale = scale
-       this.debug = debug
-    }
-}
-
 // World map consts
 const aspect_ratio = 2.25
 const viewbox_ratio = 1.5
 var height = 300
 var width = height * aspect_ratio
-var pad = 25
-
-// Circle consts
-const circle_color = "#ff0000"
-const circle_radius = 1
 
 // Circle vars
-var projection = d3.geoEqualEarth()
-const circleGenerator = d3.geoCircle()
-circleGenerator.radius(circle_radius)
+var circles = {}
 var circle_cnt = 0
 var target
-var circles = {}
 
-export function set_padding(padding){
-    pad = padding
+export class RenderPolicy{
+    constructor(center=true, 
+                scale=true, 
+                debug=false, 
+                padding=25, 
+                projection="geoEqualEarth",
+                color="#ff0000",
+                circle_radius=1){
+       this.center = center
+       this.scale = scale
+       this.debug = debug
+       this.padding = padding
+       this.projection_option = projection
+       this.projection = get_projection(projection)
+       this.circle_color = color
+       this.circle_radius = circle_radius
+       this.circle_generator = d3.geoCircle()
+       this.circle_generator.radius(circle_radius)
+    }
+
+    reset_projection(){
+       this.projection = get_projection(this.projection_option)
+    }
 }
 
+function get_projection(projection){
+    if(projection == "geoEqualEarth"){
+        return d3.geoEqualEarth()
+    }
+    else if(false){
+        // More projections...
+    }
+    else{
+        return d3.geoEqualEarth() // Default
+    }
+}
 
 // SVG utils
 export function setup_svg(id){
@@ -49,7 +65,14 @@ export function setup_svg(id){
 }
 
 // Circle funcs
-export function add_circle(svg, center=[0,0], color=circle_color){
+export function add_circle(svg, policy, color=undefined, center=[0,0]){
+    let projection = policy.projection
+    let circleGenerator = policy.circle_generator
+
+    if(color === undefined){
+        color = policy.circle_color
+    }
+
     circleGenerator.center(center)
     let circle_id = "circle_" + circle_cnt
     circle_cnt += 1
@@ -64,11 +87,14 @@ export function add_circle(svg, center=[0,0], color=circle_color){
 }
 
 export function map_range(svg, extent, geos, policy){
-    projection = d3.geoEqualEarth() // Reset projection
-
     if(policy == undefined || typeof policy != typeof new RenderPolicy()){
         policy = new RenderPolicy()
     }
+
+    policy.reset_projection()
+    let projection = policy.projection
+
+    let pad = policy.padding
 
     // Center
     var center = Point.center(extent[0], extent[1])
@@ -136,24 +162,24 @@ export function map_range(svg, extent, geos, policy){
         .attr("d", d3.geoPath(projection));
 
     // Init dynamic map
-    init_dynamic_map(svg)
+    init_dynamic_map(svg, policy)
 
     return projection
 }
 
-function init_dynamic_map(svg){
+function init_dynamic_map(svg, policy){
     d3.select("svg").on("mousedown.log", function() {
-      let target_loc = new GeoPoint(projection.invert(d3.mouse(this)))
-      set_target_loc(svg, target_loc.point)
+      let target_loc = new GeoPoint(policy.projection.invert(d3.mouse(this)))
+      set_target_loc(svg, policy, target_loc.point)
     });
 }
 
-function set_target_loc(svg, loc){
+function set_target_loc(svg, policy, loc){
     remove_target(svg)
-    target = add_circle(svg, loc, "#00ffff")
+    target = add_circle(svg, policy, "#00ffff", loc)
     for(const circle_id in circles){
         let path_obj = gen_path(circles[circle_id], loc)
-        draw_path(svg, path_obj)
+        draw_path(svg, policy, path_obj)
     }
 }
 
@@ -178,7 +204,7 @@ function gen_path(source, target){
      return path_obj
 }
 
-function draw_path(svg, path_obj){
+function draw_path(svg, policy, path_obj){
     svg.append("path")
         .datum(path_obj)
         .attr("class", "twopath")
@@ -186,5 +212,5 @@ function draw_path(svg, path_obj){
         .attr("stroke-opacity", "1")
         .attr("stroke-width", "1")
         .attr("stroke", "#cccccc")
-        .attr("d", d3.geoPath(projection));
+        .attr("d", d3.geoPath(policy.projection));
 }

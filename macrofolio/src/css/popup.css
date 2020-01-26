@@ -55,6 +55,14 @@ body *{
     flex-direction: row;
 }
 
+#controls{
+    padding: 0;
+}
+
+#render-opts{
+    padding: 0;
+}
+
 .item{
     flex-grow: 1;
     flex-shrink: 1;
