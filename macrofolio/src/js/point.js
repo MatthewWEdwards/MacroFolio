@@ -20,6 +20,10 @@ export class Point{
      * the points array, and the second Point contains the maximum values.
      */
     static range(points){
+        if(points.length == 0){
+            return [[0,0],[0,0]]
+        }
+
         var min = points.reduce((smallest, current) => {
             return new GeoPoint([Math.min(smallest.point[0], current.point[0]),
                                  Math.min(smallest.point[1], current.point[1])])

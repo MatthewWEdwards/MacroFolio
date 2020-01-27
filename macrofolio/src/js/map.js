@@ -3,13 +3,7 @@ import { geoPath } from 'd3-geo'
 import world_countries from './world-countries.json'
 import { Point, GeoPoint, CartesianPoint } from './point.js'
 
-// World map consts
-const aspect_ratio = 2.25
-const viewbox_ratio = 1.5
-var height = 300
-var width = height * aspect_ratio
-
-// Circle vars
+// Circle vars TODO: Manage these better
 var circles = {}
 var circle_cnt = 0
 var target
@@ -21,7 +15,12 @@ export class RenderPolicy{
                 padding=25, 
                 projection="geoEqualEarth",
                 color="#ff0000",
-                circle_radius=1){
+                circle_radius=1,
+                width=500)
+   {
+       var aspect_ratio = 2.25
+       var viewbox_ratio = 1.5
+
        this.center = center
        this.scale = scale
        this.debug = debug
@@ -32,6 +31,8 @@ export class RenderPolicy{
        this.circle_radius = circle_radius
        this.circle_generator = d3.geoCircle()
        this.circle_generator.radius(circle_radius)
+       this.width = width
+       this.height = height/this.aspect_ratio
     }
 
     reset_projection(){
@@ -52,14 +53,14 @@ function get_projection(projection){
 }
 
 // SVG utils
-export function setup_svg(id){
+export function setup_svg(id, policy){
     let old = d3.selectAll('svg')
     if(!(old === undefined))
         old.remove()
 
     var svg = d3.select(id).append("svg")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 " + (width * viewbox_ratio) + " " + (height * viewbox_ratio))
+        .attr("viewBox", "0 0 " + (policy.width * policy.viewbox_ratio) + " " + (policy.height * policy.viewbox_ratio))
         .classed("svg-content", true);
     return svg
 }
@@ -106,8 +107,8 @@ export function map_range(svg, extent, geos, policy){
     let clip, top_left, bot_right
 
     let scale = projection.scale()/100
-    let cut_width = width*scale
-    let cut_height = height*scale
+    let cut_width = policy.width*scale
+    let cut_height = policy.height*scale
 
     if(policy.center){
         let clip_width  = Math.abs(extent_geo[0][0] - extent_geo[1][0])/2 + pad

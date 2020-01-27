@@ -29,9 +29,9 @@ body *{
 }
 
 #d3_plot{
-    width: 300px;
-    min-width: 300px;
-    max-width: 300px;
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
 }
 
 .svg-container {
