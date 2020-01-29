@@ -3,6 +3,8 @@ import { geoPath } from 'd3-geo'
 import world_countries from './world-countries.json'
 import { Point, GeoPoint, CartesianPoint } from './point.js'
 
+// Nice styling for maps: https://www.colourlovers.com/palette/2590280/Old_Style_Map
+
 // Circle vars TODO: Manage these better
 var circles = {}
 var circle_cnt = 0
@@ -16,10 +18,10 @@ export class RenderPolicy{
                 projection="geoEqualEarth",
                 color="#ff0000",
                 circle_radius=1,
-                width=500)
+                width=675)
    {
-       var aspect_ratio = 2.25
-       var viewbox_ratio = 1.5
+       this.aspect_ratio = 2.25
+       this.viewbox_ratio = 1.5
 
        this.center = center
        this.scale = scale
@@ -32,7 +34,7 @@ export class RenderPolicy{
        this.circle_generator = d3.geoCircle()
        this.circle_generator.radius(circle_radius)
        this.width = width
-       this.height = height/this.aspect_ratio
+       this.height = width/this.aspect_ratio
     }
 
     reset_projection(){

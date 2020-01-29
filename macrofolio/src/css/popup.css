@@ -4,7 +4,7 @@ body *{
 
 #ip-count{
   font-size: 20px;
-  background-color: #f0f0f0;
+  background-color: #f2e4bd;
   margin: 0;
 }
 
@@ -29,19 +29,21 @@ body *{
 }
 
 #d3_plot{
-    width: 500px;
-    min-width: 500px;
-    max-width: 500px;
+    width: 600px;
+    min-width: 600px;
+    max-width: 600px;
+
+    height: 400px;
 }
 
 .svg-container {
     display: inline-block;
     position: relative;
     width: 100%;
-    padding-bottom: 100%;
     vertical-align: top;
     overflow: hidden;
 }
+
 .svg-content {
     display: inline-block;
     position: absolute;
@@ -55,8 +57,12 @@ body *{
     flex-direction: row;
 }
 
-#controls{
+#map{
     padding: 0;
+}
+
+#controls{
+    background-color: #FAF4DE;
 }
 
 #render-opts{
@@ -71,4 +77,3 @@ body *{
 #pad-btns{
     align-items: left;
 }
-
