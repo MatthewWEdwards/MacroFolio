@@ -77,3 +77,38 @@ body *{
 #pad-btns{
     align-items: left;
 }
+
+.btn-primary.controls{
+    background-color: #B9BD9A;
+    border: #B9BD9A;
+}
+
+.btn-primary.controls:hover{
+    background-color: #C0C3A0;
+    border: #fff;
+}
+
+.btn-primary.controls:active{
+    background-color: #C0C3A0;
+    border: #fff;
+}
+
+.btn-primary.controls::selection{
+    background-color: #C0C3A0;
+    border: #fff;
+}
+
+.btn-primary.controls:focus{
+    background-color: #C0C3A0;
+    border: #fff;
+}
+
+.btn-primary.controls:not(:disabled){
+    background-color: #C0C3A0;
+    border: #fff;
+}
+
+.btn-primary.controls:disabled{
+    background-color: #C0C3A0;
+    border: #fff;
+}
