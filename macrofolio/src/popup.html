@@ -6,20 +6,21 @@
   </head>
   <body>
         <div class="row" id="ip-count">
-            <div class="col" id="endpoints-label">
-                <div>Total unique IP endpoints:</div>
-            </div>
+            <div class="col-sm-auto" id="endpoints-label">Total unique IP endpoints:</div>
             <div class="col" id="endpoints-num">
                 <div id="num">0</div>
             </div>
+            <div class="col"></div>
         </div>
         <div class="flex-container" id="map">
             <div class="item" id="controls">
-                <div class="row">
-                    <p class="col">
+                <div class="row" id="center">
+                    <div id="center-label" class="col">
                         Center
-                    </p>
-                    <input class="col checkbox" checked=true type="checkbox" id="center" onclick="render()"></input>
+                    </div>
+                    <div class="col">
+                        <input class="checkbox" checked=true type="checkbox" id="center" onclick="render()"></input>
+                    </div>
                 </div>
                 <div class="container">
                     <div class="row">
@@ -33,18 +34,20 @@
                                   </div>
                                   <div class="row">
                                     <div class="col">
-                                      <button type="button" id="pad-large" class="btn-block btn btn-primary">Small</button>
+                                      <button type="button" id="pad-large" class="btn-block btn
+                                      btn-primary controls">Small</button>
                                     </div>
                                   </div>
                                   <div class="row">
                                     <div class="col">
-                                      <button type="button" id="pad-medium" class="btn-block btn btn-primary">Medium</button>
+                                      <button type="button" id="pad-medium" class="btn-block btn
+                                      btn-primary controls">Medium</button>
                                     </div>
                                   </div>
                                   <div class="row">
                                     <div class="col">
                                       <button type="button" id="pad-small" class="btn-block btn
-                                      btn-controls">Large</button>
+                                      btn-primary controls">Large</button>
                                     </div>
                                   </div>
                               </div>

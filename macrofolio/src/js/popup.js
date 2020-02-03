@@ -1,4 +1,3 @@
-import css from '../scss/popup.scss'
 import { RenderPolicy, setup_svg, add_circle, map_range } from './map.js'
 import { get_geopoints } from './ip.js'
 import { Point } from './point.js'
@@ -6,6 +5,8 @@ import { Point } from './point.js'
 // Includes
 import './jquery.min.js'
 import './bootstrap.min.css'
+import '../scss/popup.scss'
+
 import './bootstrap.min.js'
 import '../fonts/Gudea-Bold.ttf'
 import '../fonts/Gudea-Italic.ttf'
