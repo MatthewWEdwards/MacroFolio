@@ -147,8 +147,8 @@ export function map_range(svg, extent, geos, policy){
         let dialation_y = new_height/cut_height
         new_scale = Math.min(dialation_x, dialation_y)
 
-        top_left[0] = top_left[0] - top_left[0]/(1-new_scale)
-        top_left[1] = top_left[1] - top_left[1]/(1-new_scale)
+        top_left[0] = top_left[0] - top_left[0]/(new_scale)
+        top_left[1] = top_left[1] - top_left[1]/(new_scale)
         bot_right[0] = bot_right[0]/new_scale
         bot_right[1] = bot_right[1]/new_scale
         projection.scale(100/new_scale)
@@ -156,8 +156,8 @@ export function map_range(svg, extent, geos, policy){
 
     // Debug
     if(policy.debug){
-        add_circle(svg, projection.invert(top_left), "#00ff00")
-        add_circle(svg, projection.invert(bot_right), "#0000ff")
+        add_circle(svg, policy, "#00ff00", projection.invert(top_left))
+        add_circle(svg, policy, "#0000ff", projection.invert(bot_right))
     }
 
     svg.append("path")

@@ -4,7 +4,6 @@ import { get_geopoints } from './ip.js'
 import { Point } from './point.js'
 
 // Includes
-import './popper.min.js'
 import './jquery.min.js'
 import './bootstrap.min.css'
 import './bootstrap.min.js'
