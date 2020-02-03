@@ -160,10 +160,65 @@ export function map_range(svg, extent, geos, policy){
         add_circle(svg, policy, "#0000ff", projection.invert(bot_right))
     }
 
+    // Add style
+
+    var filter = svg.append("defs")
+      .append("filter")
+      .attr("id", "bellaItalia");
+
+    filter.append("feColorMatrix")
+        .attr("in","SourceGraphic")
+        .attr("type", "matrix")
+        .attr("values", "0 0 0 0 0.6 0 0 0 0 0.5333333333333333 0 0 0 0 0.5333333333333333  0 0 0 1 0")
+        .attr("result","f1coloredMask");
+    filter.append("feGaussianBlur")
+      .attr("in", "f1coloredMask")
+      .attr("stdDeviation", 15)
+      .attr("result", "f1blur");
+
+    filter.append("feColorMatrix")
+        .attr("in","SourceGraphic")
+        .attr("type", "matrix")
+        .attr("values", "0 0 0 0 0   0 0 0 0 0   0 0 0 0 0   0 0 0 500 0")
+        .attr("result","f2mask");
+    filter.append("feMorphology")
+        .attr("in","f2mask")
+        .attr("radius","1")
+        .attr("operator","erode")
+        .attr("result","f2r1");
+    filter.append("feGaussianBlur")
+        .attr("in","f2r1")
+        .attr("stdDeviation","4")
+        .attr("result","f2r2");
+    filter.append("feColorMatrix")
+        .attr("in","f2r2")
+        .attr("type", "matrix")
+        .attr("values", "1 0 0 0 0.5803921568627451 0 1 0 0 0.3607843137254902 0 0 1 0 0.10588235294117647 0 0 0 -1 1")
+        .attr("result","f2r3");
+    filter.append("feComposite")
+        .attr("operator","in")
+        .attr("in","f2r3")
+        .attr("in2","f2mask")
+        .attr("result","f2comp");
+
+    var feMerge = filter.append("feMerge");
+
+    feMerge.append("feMergeNode")
+        .attr("in", "f1blur");
+    feMerge.append("feMergeNode")
+        .attr("in", "f2comp");
+    feMerge.append("feMergeNode")
+        .attr("in", "SourceGraphic")
+
     svg.append("path")
         .datum(world_countries)
-        .attr("d", d3.geoPath(projection));
-
+        .attr("fill","#D1BEB0")
+        //.attr("d", path)
+        .style("filter", "url(#bellaItalia)")
+        .style("stroke", "#999")
+        .style("stroke-width", 0.2)
+        .attr("d", d3.geoPath(projection))
+  
     // Init dynamic map
     init_dynamic_map(svg, policy)
 
