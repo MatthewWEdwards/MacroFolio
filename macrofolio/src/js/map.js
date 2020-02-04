@@ -4,6 +4,7 @@ import world_countries from './world-countries.json'
 import { Point, GeoPoint, CartesianPoint } from './point.js'
 
 // Nice styling for maps: https://www.colourlovers.com/palette/2590280/Old_Style_Map
+// d3 map filters: http://geoexamples.blogspot.com/2014/01/d3-map-styling-tutorial-ii-giving-style.html
 
 // Circle vars TODO: Manage these better
 var circles = {}

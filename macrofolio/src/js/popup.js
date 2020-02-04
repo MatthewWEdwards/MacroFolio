@@ -32,8 +32,9 @@ async function render(){
     let svg_range = Point.range(geopoints)
 
     // Prepare render policy
-    let center = document.getElementById('center').checked
-    let scale = document.getElementById('center').checked
+    let center = document.getElementById('center-check').checked
+    let scale = document.getElementById('center-check').checked
+    console.log(center)
     let policy = new RenderPolicy(center, scale)
 
     let svg = setup_svg(map_id, policy)
@@ -51,9 +52,8 @@ function get_padding(policy){
 }
 
 function initialize(){
-    document.getElementById('center').onclick = render
+    document.getElementById('center-check').onclick = render
     render()
-
 
     document.getElementById('pad-large').addEventListener("click", ()=>{padding=25;render()})
     document.getElementById('pad-medium').addEventListener("click", ()=>{padding=50;render()})
