@@ -48,7 +48,6 @@ async function render(){
 
 function get_padding(policy){
     return padding
-
 }
 
 function initialize(){
