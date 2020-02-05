@@ -18,7 +18,7 @@ export class RenderPolicy{
                 debug=false, 
                 padding=25, 
                 projection="geoEqualEarth",
-                color="#ff0000",
+                color="#000000",
                 circle_radius=1,
                 width=675)
    {
@@ -83,11 +83,8 @@ export function add_circle(svg, policy, color=undefined, center=[0,0]){
     circle_cnt += 1
     svg.append("path")
         .datum(circleGenerator())
-        //.attr("fill", color)
-        .attr("fill","#000000")
+        .attr("fill", color)
         .style("filter", "url(#point-style)")
-        .style("stroke", "#999")
-        .style("stroke-width", 0.2)
         .attr("id", circle_id)
         .attr("d", d3.geoPath(projection));
     circle_id = "#" + circle_id
@@ -193,7 +190,7 @@ function init_dynamic_map(svg, policy){
 
 function set_target_loc(svg, policy, loc){
     remove_target(svg)
-    target = add_circle(svg, policy, "#00ffff", loc)
+    target = add_circle(svg, policy, "#999999", loc)
     for(const circle_id in circles){
         let path_obj = gen_path(circles[circle_id], loc)
         draw_path(svg, policy, path_obj)

@@ -42,7 +42,7 @@ async function render(){
     policy.padding = get_padding()
 
     let projection = await map_range(svg, svg_range, geopoints, policy)
-    geopoints.forEach((geo)=>{add_circle(svg, policy, "#ff0000", geo.point)}) // Draw geopoints
+    geopoints.forEach((geo)=>{add_circle(svg, policy, "#000000", geo.point)}) // Draw geopoints
 }
 
 
