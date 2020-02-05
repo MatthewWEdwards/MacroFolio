@@ -82,7 +82,11 @@ export function add_circle(svg, policy, color=undefined, center=[0,0]){
     circle_cnt += 1
     svg.append("path")
         .datum(circleGenerator())
-        .attr("fill", color)
+        //.attr("fill", color)
+        .attr("fill","#000000")
+        .style("filter", "url(#point_blur)")
+        .style("stroke", "#999")
+        .style("stroke-width", 0.2)
         .attr("id", circle_id)
         .attr("d", d3.geoPath(projection));
     circle_id = "#" + circle_id
@@ -162,6 +166,21 @@ export function map_range(svg, extent, geos, policy){
     }
 
     // Add style
+   
+    var point_blur = svg.append("defs")
+        .append("filter")
+        .attr("id", "point_blur")
+
+    point_blur.append("feGaussianBlur")
+      .attr("in", "SourceGraphic")
+      .attr("type", "matrix")
+      .attr("values", "0 0 0 0 0.6 0 0 0 0 0.5333333333333333 0 0 0 0 0.5333333333333333  0 0 0 1 0")
+      .attr("result","f1coloredMask");
+    point_blur.append("feGaussianBlur")
+      .attr("in", "f1coloredMask")
+      .attr("stdDeviation", 1)
+      .attr("result", "f1blur");
+
 
     var filter = svg.append("defs")
       .append("filter")
@@ -270,6 +289,6 @@ function draw_path(svg, policy, path_obj){
         .attr("fill-opacity", "0")
         .attr("stroke-opacity", "1")
         .attr("stroke-width", "1")
-        .attr("stroke", "#cccccc")
+        .attr("stroke", "#888888")
         .attr("d", d3.geoPath(policy.projection));
 }
