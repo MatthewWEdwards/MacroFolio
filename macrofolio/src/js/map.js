@@ -3,6 +3,7 @@ import { geoPath } from 'd3-geo'
 import world_countries from './world-countries.json'
 import { Point, GeoPoint, CartesianPoint } from './point.js'
 import { map_style } from './styling.js'
+import { range, scale } from './math.js'
 
 // Nice styling for maps: https://www.colourlovers.com/palette/2590280/Old_Style_Map
 // d3 map filters: http://geoexamples.blogspot.com/2014/01/d3-map-styling-tutorial-ii-giving-style.html
@@ -92,7 +93,8 @@ export function add_circle(svg, policy, color=undefined, center=[0,0]){
     return circle_id
 }
 
-export function map_range(svg, extent, geos, policy){
+export function map_range(svg, geos, policy){
+
     if(policy == undefined || typeof policy != typeof new RenderPolicy()){
         policy = new RenderPolicy()
     }
@@ -103,59 +105,19 @@ export function map_range(svg, extent, geos, policy){
     let pad = policy.padding
 
     // Center
-    var center = Point.center(extent[0], extent[1])
     if(policy.center)
-        projection.center(center)
+        projection.center(Point.center(geos))
     
-    // Get extreme top-left and bottom-right points
-    let extent_geo = extent.map(point => projection(point.point))
-    let clip, top_left, bot_right
-
-    let scale = projection.scale()/100
-    let cut_width = policy.width*scale
-    let cut_height = policy.height*scale
-
-    if(policy.center){
-        let clip_width  = Math.abs(extent_geo[0][0] - extent_geo[1][0])/2 + pad
-        let clip_height = Math.abs(extent_geo[0][1] - extent_geo[1][1])/2 + pad
-
-        let center_xy = projection(center)
-        let cx = center_xy[0]
-        let cy = center_xy[1]
-
-        top_left  = [Math.max(0, cx - clip_width), Math.max(0, cy - clip_height)]
-        bot_right = [Math.min(cut_width, cx + clip_width), Math.min(cut_height, cy + clip_height)]
-        clip = [top_left, bot_right]
-
-    }else{
-        let carts = Array()
-        geos.forEach((geo)=>{carts.push(geo.toCartesian(projection))})
-        let extremes = Point.range(carts)
-        top_left = extremes[0].point
-        bot_right = extremes[1].point
-
-        top_left[0] = Math.max(0, top_left[0] - pad)
-        top_left[1] = Math.max(0, top_left[1] - pad)
-        bot_right[0] = Math.min(cut_width, bot_right[0] + pad)
-        bot_right[1] = Math.min(cut_height, bot_right[1] + pad)
-        clip = [top_left, bot_right]
-    }
-
     // Scale
-    let new_scale
+    let new_scale = scale(policy, projection, geos, pad)
     if(policy.scale){
-        let new_width  = (bot_right[0] - top_left[0])
-        let new_height = (bot_right[1] - top_left[1])
-        let dialation_x = new_width/cut_width
-        let dialation_y = new_height/cut_height
-        new_scale = Math.min(dialation_x, dialation_y)
-
-        top_left[0] = top_left[0] - top_left[0]/(new_scale)
-        top_left[1] = top_left[1] - top_left[1]/(new_scale)
-        bot_right[0] = bot_right[0]/new_scale
-        bot_right[1] = bot_right[1]/new_scale
         projection.scale(100/new_scale)
     }
+
+    top_left[0] = top_left[0] - top_left[0]/(new_scale)
+    top_left[1] = top_left[1] - top_left[1]/(new_scale)
+    bot_right[0] = bot_right[0]/new_scale
+    bot_right[1] = bot_right[1]/new_scale
 
     // Debug
     if(policy.debug){

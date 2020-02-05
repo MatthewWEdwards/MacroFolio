@@ -36,9 +36,15 @@ export class Point{
         return [min, max]
     }
 
-    static center(point1, point2){
+    static middle(point1, point2){
         return [(point1.point[0] + point2.point[0])/2, (point1.point[1] + point2.point[1])/2]
     }
+
+    static center(points){
+        let extent = this.range(points)
+        return this.middle(extent[0], extent[1])
+    }
+
 }
 
 

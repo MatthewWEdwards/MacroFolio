@@ -29,8 +29,6 @@ async function render(){
     if(geopoints == undefined)
        geopoints  = await get_geopoints()
 
-    let svg_range = Point.range(geopoints)
-
     // Prepare render policy
     let center = document.getElementById('center-check').checked
     let scale = document.getElementById('center-check').checked
@@ -41,7 +39,7 @@ async function render(){
 
     policy.padding = get_padding()
 
-    let projection = await map_range(svg, svg_range, geopoints, policy)
+    let projection = await map_range(svg, geopoints, policy)
     geopoints.forEach((geo)=>{add_circle(svg, policy, "#000000", geo.point)}) // Draw geopoints
 }
 
