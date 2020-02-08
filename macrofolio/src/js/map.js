@@ -20,7 +20,7 @@ export class RenderPolicy{
                 padding=25, 
                 projection="geoEqualEarth",
                 color="#000000",
-                circle_radius=1,
+                circle_radius=.5,
                 width=675)
    {
        this.aspect_ratio = 2.25
@@ -72,12 +72,16 @@ export function setup_svg(id, policy){
 
 // Circle funcs
 export function add_circle(svg, policy, color=undefined, center=[0,0]){
+    // If circle is duplicate, ignore
+    for(var circle in circles)
+        if(circles[circle] == center)
+            return [0, 0]
+
     let projection = policy.projection
     let circleGenerator = policy.circle_generator
 
-    if(color === undefined){
+    if(color === undefined)
         color = policy.circle_color
-    }
 
     circleGenerator.center(center)
     let circle_id = "circle_" + circle_cnt
@@ -94,6 +98,10 @@ export function add_circle(svg, policy, color=undefined, center=[0,0]){
 }
 
 export function map_range(svg, geos, policy){
+    // Circle vars TODO: Manage these better
+    circles = {}
+    circle_cnt = 0
+    target
 
     if(policy == undefined || typeof policy != typeof new RenderPolicy()){
         policy = new RenderPolicy()
@@ -102,22 +110,15 @@ export function map_range(svg, geos, policy){
     policy.reset_projection()
     let projection = policy.projection
 
-    let pad = policy.padding
-
     // Center
     if(policy.center)
         projection.center(Point.center(geos))
     
     // Scale
-    let new_scale = scale(policy, projection, geos, pad)
+    let new_scale = scale(policy, projection, geos, policy.padding)
     if(policy.scale){
         projection.scale(100/new_scale)
     }
-
-    top_left[0] = top_left[0] - top_left[0]/(new_scale)
-    top_left[1] = top_left[1] - top_left[1]/(new_scale)
-    bot_right[0] = bot_right[0]/new_scale
-    bot_right[1] = bot_right[1]/new_scale
 
     // Debug
     if(policy.debug){
