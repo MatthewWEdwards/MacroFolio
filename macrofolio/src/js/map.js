@@ -4,6 +4,7 @@ import world_countries from './world-countries.json'
 import { Point, GeoPoint, CartesianPoint } from './point.js'
 import { map_style } from './styling.js'
 import { range, scale } from './math.js'
+import { gen_path, draw_path } from './path.js'
 
 // Nice styling for maps: https://www.colourlovers.com/palette/2590280/Old_Style_Map
 // d3 map filters: http://geoexamples.blogspot.com/2014/01/d3-map-styling-tutorial-ii-giving-style.html
@@ -166,28 +167,3 @@ function remove_target(svg){
     svg.selectAll(".twopath").remove()
 }
 
-function gen_path(source, target){
-     let path_obj =
-     {
-       "type": "Feature",
-       "geometry": {
-          "type": "LineString",
-          "coordinates": [
-              source,
-              target
-          ]
-       }
-     }
-     return path_obj
-}
-
-function draw_path(svg, policy, path_obj){
-    svg.append("path")
-        .datum(path_obj)
-        .attr("class", "twopath")
-        .attr("fill-opacity", "0")
-        .attr("stroke-opacity", "1")
-        .attr("stroke-width", "1")
-        .attr("stroke", "#888888")
-        .attr("d", d3.geoPath(policy.projection));
-}
