@@ -4,7 +4,8 @@ import world_countries from './world-countries.json'
 import { Point, GeoPoint, CartesianPoint } from './point.js'
 import { map_style } from './styling.js'
 import { range, scale } from './math.js'
-import { gen_path, draw_path } from './path.js'
+import { gen_path, draw_paths, get_packet } from './path.js' 
+import async from 'async'
 
 // Nice styling for maps: https://www.colourlovers.com/palette/2590280/Old_Style_Map
 // d3 map filters: http://geoexamples.blogspot.com/2014/01/d3-map-styling-tutorial-ii-giving-style.html
@@ -155,10 +156,13 @@ function init_dynamic_map(svg, policy){
 function set_target_loc(svg, policy, loc){
     remove_target(svg)
     target = add_circle(svg, policy, "#999999", loc)
-    for(const circle_id in circles){
-        let path_obj = gen_path(circles[circle_id], loc)
-        draw_path(svg, policy, path_obj)
-    }
+
+    var features = []
+    async.each(circles, function(circle){
+        features.push(gen_path(circle, loc))
+        //add_circle_path(svg, policy, "#00ff00", d3.geoInterpolate(circles[circle_id], loc)(.5))
+    })
+    draw_paths(svg, policy, features)
 }
 
 function remove_target(svg){

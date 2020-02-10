@@ -16,9 +16,12 @@ export function gen_path(source, target){
      return path_obj
 }
 
-export function draw_path(svg, policy, path_obj){
+export function draw_paths(svg, policy, features){
+    var features_arr = !Array.isArray(features)) ? [features] : features
+
+    var feature_collection = {"type":"FeatureCollection","features": features_arr}
     svg.append("path")
-        .datum(path_obj)
+        .datum(features_collection)
         .attr("class", "twopath")
         .attr("fill-opacity", "0")
         .attr("stroke-opacity", "1")
