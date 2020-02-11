@@ -5,6 +5,7 @@ import { Point, GeoPoint, CartesianPoint } from './point.js'
 import { map_style } from './styling.js'
 import { range, scale } from './math.js'
 import { gen_path, draw_paths, get_packet } from './path.js' 
+import { draw_viewbox, draw_circle } from './draw.js'
 import async from 'async'
 
 // Nice styling for maps: https://www.colourlovers.com/palette/2590280/Old_Style_Map
@@ -64,12 +65,7 @@ export function setup_svg(id, policy){
     let old = d3.selectAll('svg')
     if(!(old === undefined))
         old.remove()
-
-    var svg = d3.select(id).append("svg")
-        .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 " + (policy.width * policy.viewbox_ratio) + " " + (policy.height * policy.viewbox_ratio))
-        .classed("svg-content", true);
-    return svg
+    return draw_viewbox(id, policy)
 }
 
 // Circle funcs
@@ -79,23 +75,15 @@ export function add_circle(svg, policy, color=undefined, center=[0,0]){
         if(circles[circle] == center)
             return [0, 0]
 
-    let projection = policy.projection
-    let circleGenerator = policy.circle_generator
-
     if(color === undefined)
         color = policy.circle_color
 
-    circleGenerator.center(center)
+    policy.circle_generator.center(center)
     let circle_id = "circle_" + circle_cnt
-    circle_cnt += 1
-    svg.append("path")
-        .datum(circleGenerator())
-        .attr("fill", color)
-        .style("filter", "url(#point-style)")
-        .attr("id", circle_id)
-        .attr("d", d3.geoPath(projection));
+    draw_circle(svg, policy.circle_generator(), circle_id, 'source-point-style', policy.projection)
     circle_id = "#" + circle_id
     circles[circle_id] = center
+    circle_cnt += 1
     return circle_id
 }
 
@@ -103,7 +91,7 @@ export function map_range(svg, geos, policy){
     // Circle vars TODO: Manage these better
     circles = {}
     circle_cnt = 0
-    target
+    target = 0
 
     if(policy == undefined || typeof policy != typeof new RenderPolicy()){
         policy = new RenderPolicy()

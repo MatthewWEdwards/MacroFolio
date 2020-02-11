@@ -17,11 +17,11 @@ export function gen_path(source, target){
 }
 
 export function draw_paths(svg, policy, features){
-    var features_arr = !Array.isArray(features)) ? [features] : features
+    var features_arr = !Array.isArray(features) ? [features] : features
 
     var feature_collection = {"type":"FeatureCollection","features": features_arr}
     svg.append("path")
-        .datum(features_collection)
+        .datum(feature_collection)
         .attr("class", "twopath")
         .attr("fill-opacity", "0")
         .attr("stroke-opacity", "1")

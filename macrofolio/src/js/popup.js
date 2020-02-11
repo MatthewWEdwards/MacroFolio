@@ -6,6 +6,7 @@ import { Point } from './point.js'
 import './jquery.min.js'
 import './bootstrap.min.css'
 import '../scss/popup.scss'
+import '../scss/map.scss'
 
 import './bootstrap.min.js'
 import '../fonts/Gudea-Bold.ttf'
