@@ -18,3 +18,13 @@ export function draw_circle(svg, circle, id, cls, projection){
         .attr("id", id)
         .attr("d", d3.geoPath(projection))
 }
+
+export function draw_packet(svg, circle, id, projection){
+    svg.append("path")
+        .datum(circle)
+        .attr("fill", "#000000")
+        .attr("class", "packet")
+        .style("filter", "url(#point-style)")
+        .attr("id", id)
+        .attr("d", d3.geoPath(projection))
+}

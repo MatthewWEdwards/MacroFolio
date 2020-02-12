@@ -5,7 +5,7 @@ import { Point, GeoPoint, CartesianPoint } from './point.js'
 import { map_style } from './styling.js'
 import { range, scale } from './math.js'
 import { gen_path, draw_paths, get_packet } from './path.js' 
-import { draw_viewbox, draw_circle } from './draw.js'
+import { draw_viewbox, draw_circle, draw_packet } from './draw.js'
 import async from 'async'
 
 // Nice styling for maps: https://www.colourlovers.com/palette/2590280/Old_Style_Map
@@ -14,6 +14,8 @@ import async from 'async'
 // Circle vars TODO: Manage these better
 var circles = {}
 var circle_cnt = 0
+var packets = {}
+var packet_cnt = 0
 var target
 
 export class RenderPolicy{
@@ -87,6 +89,25 @@ export function add_circle(svg, policy, color=undefined, center=[0,0]){
     return circle_id
 }
 
+function add_packet(svg, policy, color=undefined, center=[0,0]){
+    if(color === undefined)
+        color = policy.circle_color
+
+    policy.circle_generator.center(center)
+    let packet_id = "packet_" + packet_cnt
+    draw_packet(svg, policy.circle_generator(), packet_id, policy.projection)
+    packet_id = "#" + packet_id
+    packets[packet_id] = center
+    packet_cnt += 1
+    return packet_id
+}
+
+function clear_packets(svg){
+    svg.selectAll(".packet").remove()
+    packets = {}
+    packet_cnt = 0
+}
+
 export function map_range(svg, geos, policy){
     // Circle vars TODO: Manage these better
     circles = {}
@@ -148,13 +169,14 @@ function set_target_loc(svg, policy, loc){
     var features = []
     async.each(circles, function(circle){
         features.push(gen_path(circle, loc))
-        //add_circle_path(svg, policy, "#00ff00", d3.geoInterpolate(circles[circle_id], loc)(.5))
+        add_packet(svg, policy, "#00ff00", d3.geoInterpolate(circle, loc)(.5), false)
     })
     draw_paths(svg, policy, features)
 }
 
 function remove_target(svg){
     d3.select(target).remove()
+    clear_packets(svg)
     delete circles[target]
     svg.selectAll(".twopath").remove()
 }
