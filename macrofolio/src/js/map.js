@@ -6,6 +6,7 @@ import { map_style } from './styling.js'
 import { range, scale } from './math.js'
 import { gen_path, draw_paths, get_packet } from './path.js' 
 import { draw_viewbox, draw_circle, draw_packet } from './draw.js'
+import { Packet } from './packet.js'
 import async from 'async'
 
 // Nice styling for maps: https://www.colourlovers.com/palette/2590280/Old_Style_Map
@@ -89,16 +90,17 @@ export function add_circle(svg, policy, color=undefined, center=[0,0]){
     return circle_id
 }
 
-function add_packet(svg, policy, color=undefined, center=[0,0]){
+function add_packet(svg, policy, color=undefined, src, target){
     if(color === undefined)
         color = policy.circle_color
 
-    policy.circle_generator.center(center)
     let packet_id = "packet_" + packet_cnt
-    draw_packet(svg, policy.circle_generator(), packet_id, policy.projection)
     packet_id = "#" + packet_id
-    packets[packet_id] = center
     packet_cnt += 1
+    let packet = new Packet(src, target, packet_id)
+    packet.iterate(svg, policy)
+    packets[packet_id] = packet
+
     return packet_id
 }
 
@@ -107,6 +109,7 @@ function clear_packets(svg){
     packets = {}
     packet_cnt = 0
 }
+
 
 export function map_range(svg, geos, policy){
     // Circle vars TODO: Manage these better
@@ -162,6 +165,8 @@ function init_dynamic_map(svg, policy){
     });
 }
 
+var interval
+
 function set_target_loc(svg, policy, loc){
     remove_target(svg)
     target = add_circle(svg, policy, "#999999", loc)
@@ -169,14 +174,16 @@ function set_target_loc(svg, policy, loc){
     var features = []
     async.each(circles, function(circle){
         features.push(gen_path(circle, loc))
-        add_packet(svg, policy, "#00ff00", d3.geoInterpolate(circle, loc)(.5), false)
+        console.log(add_packet(svg, policy, "#00ff00", circle, loc, false))
     })
     draw_paths(svg, policy, features)
+    interval = setInterval(()=>{d3.selectAll('.packet').remove();Object.entries(packets).forEach((packet)=>{packet[1].iterate(svg, policy)})}, 100)
 }
 
 function remove_target(svg){
     d3.select(target).remove()
     clear_packets(svg)
+    clearInterval(interval)
     delete circles[target]
     svg.selectAll(".twopath").remove()
 }
