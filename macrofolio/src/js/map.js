@@ -169,6 +169,7 @@ var interval
 
 function set_target_loc(svg, policy, loc){
     remove_target(svg)
+    policy.circle_generator.radius(policy.circle_radius)
     target = add_circle(svg, policy, "#999999", loc)
 
     var features = []
@@ -177,7 +178,8 @@ function set_target_loc(svg, policy, loc){
         console.log(add_packet(svg, policy, "#00ff00", circle, loc, false))
     })
     draw_paths(svg, policy, features)
-    interval = setInterval(()=>{d3.selectAll('.packet').remove();Object.entries(packets).forEach((packet)=>{packet[1].iterate(svg, policy)})}, 100)
+    policy.circle_generator.radius(.3)
+    interval = setInterval(()=>{d3.selectAll('.packet').remove();Object.entries(packets).forEach((packet)=>{packet[1].iterate(svg, policy)})}, 40)
 }
 
 function remove_target(svg){

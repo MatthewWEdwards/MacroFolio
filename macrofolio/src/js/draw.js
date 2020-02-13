@@ -20,11 +20,11 @@ export function draw_circle(svg, circle, id, cls, projection){
 }
 
 export function draw_packet(svg, circle, id, projection){
-    return svg.append("path")
-           .datum(circle)
-           .attr("fill", "#000000")
-           .attr("class", "packet")
-           .style("filter", "url(#point-style)")
-           .attr("id", id)
-           .attr("d", d3.geoPath(projection))
+    svg.append("path")
+        .datum(circle)
+        .attr("fill", "#EEEEEE")
+        .attr("class", "packet")
+        .style("filter", "url(#point-style)")
+        .attr("id", id)
+        .attr("d", d3.geoPath(projection))
 }
