@@ -6,7 +6,9 @@ import { map_style } from './styling.js'
 import { range, scale } from './math.js'
 import { gen_path, draw_paths, get_packet } from './path.js' 
 import { draw_viewbox, draw_circle, draw_packet } from './draw.js'
-import { Packet } from './packet.js'
+import { packet_manager, Packet } from './packet.js'
+console.log("Foo")
+console.log( packet_manager)
 import async from 'async'
 
 // Nice styling for maps: https://www.colourlovers.com/palette/2590280/Old_Style_Map
@@ -15,8 +17,6 @@ import async from 'async'
 // Circle vars TODO: Manage these better
 var circles = {}
 var circle_cnt = 0
-var packets = {}
-var packet_cnt = 0
 var target
 
 export class RenderPolicy{
@@ -94,20 +94,13 @@ function add_packet(svg, policy, color=undefined, src, target){
     if(color === undefined)
         color = policy.circle_color
 
-    let packet_id = "packet_" + packet_cnt
+    let packet_id = "packet_" + packet_manager.count()
     packet_id = "#" + packet_id
-    packet_cnt += 1
     let packet = new Packet(src, target, packet_id)
     packet.iterate(svg, policy)
-    packets[packet_id] = packet
+    packet_manager.add(packet, packet_id)
 
     return packet_id
-}
-
-function clear_packets(svg){
-    svg.selectAll(".packet").remove()
-    packets = {}
-    packet_cnt = 0
 }
 
 
@@ -165,8 +158,6 @@ function init_dynamic_map(svg, policy){
     });
 }
 
-var interval
-
 function set_target_loc(svg, policy, loc){
     remove_target(svg)
     policy.circle_generator.radius(policy.circle_radius)
@@ -179,13 +170,12 @@ function set_target_loc(svg, policy, loc){
     })
     draw_paths(svg, policy, features)
     policy.circle_generator.radius(.3)
-    interval = setInterval(()=>{d3.selectAll('.packet').remove();Object.entries(packets).forEach((packet)=>{packet[1].iterate(svg, policy)})}, 40)
+    packet_manager.start(svg, policy)
 }
 
 function remove_target(svg){
     d3.select(target).remove()
-    clear_packets(svg)
-    clearInterval(interval)
+    packet_manager.stop()
     delete circles[target]
     svg.selectAll(".twopath").remove()
 }

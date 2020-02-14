@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
-
 const circle_style = 'point-style'
+
 
 export function draw_viewbox(id, policy){
     return d3.select(id).append("svg")
