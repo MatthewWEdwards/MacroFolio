@@ -11,3 +11,5 @@ app/scripts
 yarn.lock
 build/
 example_chrome_app
+
+*.zip
